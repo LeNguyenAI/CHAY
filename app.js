@@ -506,7 +506,8 @@ function addTask(text, shouldRender = true) {
   if (shouldRender) saveAndRender();
 }
 
-function applyTemplate(templateId) {
+function applyTemplate(templateId, options = {}) {
+  const { scrollToTasks = true } = options;
   const template = state.templates.find((item) => item.id === templateId);
   if (!template) return;
   state.selectedTemplate = template.id;
@@ -514,6 +515,7 @@ function applyTemplate(templateId) {
   state.commitment = `Cuối phiên tôi sẽ có: ${template.note.toLowerCase()}`;
   addLog(`Đã áp dụng template: ${template.title}.`);
   saveAndRender();
+  if (!scrollToTasks) return;
   window.setTimeout(() => {
     document.querySelector("#taskPanel").scrollIntoView({ behavior: "smooth", block: "start" });
   }, 80);
@@ -579,7 +581,7 @@ function saveProfile() {
   state.selectedTemplate = state.profile.role;
   if (!state.tasks.length) {
     const templateId = state.profile.role === "content" ? "content" : state.profile.role;
-    applyTemplate(templateId);
+    applyTemplate(templateId, { scrollToTasks: false });
   }
   addLog(`Đã thiết lập hồ sơ cho ${roleLabels[state.profile.role]}.`);
   saveAndRender();
@@ -860,6 +862,11 @@ el.resetSettingsButton.addEventListener("click", resetSettings);
 el.scrollTopButton.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
+
+window.addEventListener("scroll", () => {
+  el.scrollTopButton.classList.toggle("is-visible", window.scrollY > 520);
+}, { passive: true });
+
 el.openGuideButton.addEventListener("click", () => toggleGuide(true));
 el.closeGuideButton.addEventListener("click", () => toggleGuide(false));
 el.durationSelect.addEventListener("change", (event) => setDuration(event.target.value));
