@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CHẠY - bật mode làm việc</title>
     <meta name="description" content="CHẠY là dashboard Free giúp freelancer marketing bắt đầu phiên tập trung, chọn việc chính và giữ nhịp làm mỗi ngày.">
-    <meta name="theme-color" content="#0d100f">
+    <meta name="theme-color" content="#0D0F12">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -195,18 +195,29 @@
       </aside>
 
       <section class="workspace">
-        <header class="topbar">
-          <div>
+        <header class="hero-section reveal">
+          <div class="hero-copy-block">
             <p class="eyebrow" id="todayLabel"></p>
-            <h2>Không cần hoàn hảo. Chỉ cần bật lên và CHẠY.</h2>
-            <p class="hero-copy">Dashboard tối gọn cho freelancer marketing: chọn việc đáng làm, bật sprint, ghi cam kết và giữ nhịp như đang có team chờ bạn bàn giao.</p>
+            <h2>Bật mode làm việc.</h2>
+            <p class="hero-copy">CHAY giúp marketer, freelancer và creator ngừng trôi trong trạng thái “để lát nữa” bằng một phiên chạy việc ngắn, rõ đầu ra, ít ma sát.</p>
+            <div class="hero-pills" aria-label="Giá trị chính của CHAY">
+              <span>Anti-procrastination</span>
+              <span>Creator focus</span>
+              <span>Tiny progress daily</span>
+            </div>
           </div>
-          <div class="hero-action">
+          <div class="hero-run-card">
+            <div class="hero-run-head">
+              <span>RUN MODE</span>
+              <small>Deep focus preview</small>
+            </div>
+            <div class="hero-run-time">25:00</div>
+            <p>Làm trước. Động lực tính sau.</p>
             <button class="primary-button" id="startDayButton" type="button">
               <span class="button-icon" aria-hidden="true">⚡</span>
               Bật mode CHẠY
             </button>
-            <p class="button-help">Bấm để mở Focus Mode, chạy timer và bắt đầu việc đầu tiên.</p>
+            <p class="button-help">Mở RUN MODE, chạy timer và kéo việc đầu tiên lên màn hình.</p>
           </div>
         </header>
 
@@ -217,7 +228,7 @@
           <a href="#reviewPanel">Tuần</a>
         </nav>
 
-        <section class="checkin-band" aria-label="Chọn trạng thái năng lượng">
+        <section class="checkin-band reveal" aria-label="Chọn trạng thái năng lượng">
           <div>
             <p class="panel-label">Bạn đang ở mức nào?</p>
             <p class="feature-note">Chọn trạng thái thật của bạn để nhận một gợi ý bắt đầu phù hợp, không ép bản thân quá sức.</p>
@@ -232,7 +243,60 @@
           </div>
         </section>
 
-        <section class="command-center tool-panel" id="commandCenter">
+        <section class="run-mode-showcase tool-panel reveal" id="focusPanel">
+          <div class="run-mode-copy">
+            <p class="panel-label">RUN MODE</p>
+            <h3>Không gian tập trung cho người làm sáng tạo</h3>
+            <p class="feature-note">Một màn hình tối, timer rõ, lời nhắc nhỏ và ít thứ gây nhiễu. Dành cho lúc bạn biết cần làm, nhưng não vẫn muốn né.</p>
+            <div class="run-mode-prompts">
+              <span>Làm bản nháp trước.</span>
+              <span>Không cần hay ngay.</span>
+              <span>Chỉ cần có cái để sửa.</span>
+            </div>
+          </div>
+
+          <div class="run-mode-console">
+            <div class="console-topline">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="timer-face" aria-live="polite">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+                <circle class="ring-progress" id="timerRing" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <div>
+                <strong id="timerDisplay">25:00</strong>
+                <span id="timerState">Sẵn sàng</span>
+              </div>
+            </div>
+
+            <select id="durationSelect" aria-label="Độ dài phiên tập trung">
+              <option value="15">15 phút</option>
+              <option value="25" selected>25 phút</option>
+              <option value="45">45 phút</option>
+            </select>
+
+            <div class="timer-actions">
+              <button class="primary-button" id="timerToggleButton" type="button">
+                <span class="button-icon" aria-hidden="true">▶</span>
+                Chạy
+              </button>
+              <button class="ghost-button" id="timerResetButton" type="button">
+                <span class="button-icon" aria-hidden="true">↺</span>
+                Đặt lại
+              </button>
+              <button class="ghost-button" id="focusModeButton" type="button">
+                <span class="button-icon" aria-hidden="true">⛶</span>
+                Mở toàn màn hình
+              </button>
+            </div>
+            <button class="rescue-button" id="rescueButton" type="button">Kẹt rồi, gợi ý bước nhỏ</button>
+          </div>
+        </section>
+
+        <section class="command-center tool-panel reveal" id="commandCenter">
           <div class="section-heading">
             <div>
               <p class="panel-label">Bảng thắng hôm nay</p>
@@ -265,7 +329,7 @@
         </section>
 
         <section class="grid">
-          <article class="tool-panel templates-panel" id="templatesPanel">
+          <article class="tool-panel templates-panel reveal" id="templatesPanel">
             <div class="section-heading">
               <div>
                 <p class="panel-label">Mẫu việc marketing</p>
@@ -276,7 +340,7 @@
             <div class="template-grid" id="templateGrid"></div>
           </article>
 
-          <article class="tool-panel priority-panel">
+          <article class="tool-panel priority-panel reveal">
             <div class="section-heading">
               <div>
                 <p class="panel-label">3 việc chính</p>
@@ -297,49 +361,7 @@
             <ul class="task-list" id="taskList"></ul>
           </article>
 
-          <article class="tool-panel timer-panel" id="focusPanel">
-            <div class="section-heading">
-              <div>
-                <p class="panel-label">Phiên tập trung</p>
-                <h3>Chạy 1 phiên ngắn, ra 1 đầu việc</h3>
-                <p class="feature-note">Timer giúp bạn bắt đầu nhanh và biết khi nào được dừng.</p>
-              </div>
-              <select id="durationSelect" aria-label="Độ dài phiên tập trung">
-                <option value="15">15 phút</option>
-                <option value="25" selected>25 phút</option>
-                <option value="45">45 phút</option>
-              </select>
-            </div>
-
-            <div class="timer-face" aria-live="polite">
-              <svg viewBox="0 0 120 120" aria-hidden="true">
-                <circle class="ring-track" cx="60" cy="60" r="52"></circle>
-                <circle class="ring-progress" id="timerRing" cx="60" cy="60" r="52"></circle>
-              </svg>
-              <div>
-                <strong id="timerDisplay">25:00</strong>
-                <span id="timerState">Sẵn sàng</span>
-              </div>
-            </div>
-
-            <div class="timer-actions">
-              <button class="primary-button" id="timerToggleButton" type="button">
-                <span class="button-icon" aria-hidden="true">▶</span>
-                Chạy
-              </button>
-              <button class="ghost-button" id="timerResetButton" type="button">
-                <span class="button-icon" aria-hidden="true">↺</span>
-                Đặt lại
-              </button>
-              <button class="ghost-button" id="focusModeButton" type="button">
-                <span class="button-icon" aria-hidden="true">⛶</span>
-                Focus
-              </button>
-            </div>
-            <button class="rescue-button" id="rescueButton" type="button">Kẹt rồi, gợi ý bước nhỏ</button>
-          </article>
-
-          <article class="tool-panel brief-panel">
+          <article class="tool-panel brief-panel reveal">
             <div class="section-heading">
               <div>
                 <p class="panel-label">Cam kết đầu ra</p>
@@ -355,7 +377,7 @@
             </button>
           </article>
 
-          <article class="tool-panel review-panel" id="reviewPanel">
+          <article class="tool-panel review-panel reveal" id="reviewPanel">
             <div class="section-heading">
               <div>
                 <p class="panel-label">Review tuần</p>
@@ -371,7 +393,7 @@
             <p class="review-insight" id="weekInsight"></p>
           </article>
 
-          <article class="tool-panel log-panel">
+          <article class="tool-panel log-panel reveal">
             <div class="section-heading">
               <div>
                 <p class="panel-label">Lịch sử hôm nay</p>
@@ -387,10 +409,10 @@
 
     <section class="focus-overlay" id="focusOverlay" aria-hidden="true">
       <button class="icon-button focus-close" id="closeFocusButton" type="button" aria-label="Đóng focus mode">×</button>
-      <p class="eyebrow">Focus mode</p>
+      <p class="eyebrow">RUN MODE</p>
       <h2>Một phiên. Một đầu ra.</h2>
       <div class="focus-time" id="focusTimerDisplay">25:00</div>
-      <p id="focusCommitmentText">Viết cam kết bàn giao để não biết cần kết thúc ở đâu.</p>
+      <p id="focusCommitmentText">Một phiên. Một đầu ra. Không cần hoàn hảo.</p>
       <div class="timer-actions">
         <button class="primary-button" id="focusToggleButton" type="button">
           <span class="button-icon" aria-hidden="true">▶</span>

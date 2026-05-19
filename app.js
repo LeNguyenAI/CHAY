@@ -25,18 +25,18 @@ const goalLabels = {
 };
 
 const defaultQuotes = [
-  "Không cần có hứng mới làm. Làm 10 phút trước, hứng thường chạy theo sau.",
-  "Freelancer giỏi không thắng vì ngày nào cũng bốc lửa. Họ thắng vì biết bắt đầu lại rất nhanh.",
-  "Một bản nháp xấu vẫn tạo đà tốt hơn một ý tưởng hoàn hảo nằm im.",
-  "Hãy làm việc như thể cuối ngày có người hỏi: hôm nay mình bàn giao được gì?",
-  "Marketing là trò chơi của nhịp độ. Một bước rõ ràng hôm nay đáng hơn mười ý định mơ hồ.",
-  "Bạn không cần quản lý đứng sau lưng. Bạn cần một hệ thống đủ nhẹ để bật lên và CHẠY mỗi ngày."
+  "Làm trước rồi mới có động lực. Đừng đợi não thuyết phục bạn.",
+  "Một bản nháp xấu vẫn thắng một ý tưởng đẹp nằm im.",
+  "Hôm nay không cần bùng nổ. Chỉ cần có một thứ được đẩy về phía trước.",
+  "Nếu đang né việc, thu nhỏ nó lại cho đến khi bạn chịu bắt đầu.",
+  "Creator không thiếu ý tưởng. Thứ dễ thiếu là một phiên đủ yên để làm ra bản nháp.",
+  "Không cần hoàn hảo. Chỉ cần bật lên và CHAY."
 ];
 
 const nudges = {
-  low: "Chọn một việc dễ nhất, đặt 15 phút, chỉ cần mở file và tạo bản nháp. Mục tiêu là lấy lại đà, chưa cần xuất sắc.",
-  steady: "Chọn đầu ra cụ thể nhất trong ngày. Khi đầu ra rõ, não ít phải mặc cả hơn.",
-  sharp: "Dùng phiên đầu cho việc có giá trị cao nhất: chiến lược, concept, hook, proposal hoặc phần khách hàng sẽ thấy."
+  low: "Đừng ép mình thành người siêu năng suất. Chọn một bước nhỏ, chạy 15 phút, tạo đà trước.",
+  steady: "Bạn đang đủ ổn để làm việc thật. Chọn một đầu ra cụ thể và để RUN MODE giữ nhịp.",
+  sharp: "Dùng phiên đầu cho việc có lực nhất: concept, hook, proposal, strategy hoặc phần khách hàng sẽ thấy."
 };
 
 const defaultTemplates = [
@@ -92,11 +92,11 @@ const defaultTemplates = [
 ];
 
 const rescueSteps = [
-  "Mở đúng file cần làm, đổi tên nó thành bản nháp hôm nay, rồi dừng 2 phút.",
-  "Viết 3 gạch đầu dòng xấu nhất có thể. Chỉ cần có vật liệu để sửa.",
-  "Chọn một khách hàng hoặc một chiến dịch duy nhất. Không tối ưu cả cuộc đời trong một phiên.",
+  "Mở đúng file cần làm. Chỉ mở thôi cũng được, nhưng mở ngay.",
+  "Viết 3 gạch đầu dòng xấu nhất có thể. Vật liệu thô trước, hay tính sau.",
+  "Chọn một khách hàng hoặc một chiến dịch duy nhất. Đừng tối ưu cả cuộc đời trong một phiên.",
   "Đặt timer 15 phút và làm phần dễ nhất: tiêu đề, outline, số liệu hoặc email update.",
-  "Viết câu này vào cam kết: 'Cuối phiên tôi sẽ có một bản nháp có thể gửi để xin feedback.'"
+  "Viết câu này vào cam kết: 'Cuối phiên tôi sẽ có một bản nháp đủ để sửa tiếp.'"
 ];
 
 const defaultState = {
@@ -741,7 +741,7 @@ function activateRunMode() {
       : "Cuối phiên tôi sẽ có một đầu ra nhỏ có thể bàn giao hoặc xin feedback.";
   }
 
-  addLog("Đã bật mode CHẠY: mở Focus Mode, chuẩn bị checklist và bắt đầu sprint.");
+  addLog("Đã bật RUN MODE: mở màn hình tập trung, chuẩn bị checklist và bắt đầu phiên chạy việc.");
   saveState();
   render();
 
