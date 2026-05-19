@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 400" role="img" aria-labelledby="title desc">
+  <title id="title">CHAY dark marketing dashboard</title>
+  <desc id="desc">Một dashboard marketing tối với điểm nhấn lime neon, biểu đồ chiến dịch và hai freelancer đang làm việc.</desc>
+  <rect width="620" height="400" rx="18" fill="#0d100f"/>
+  <rect x="28" y="30" width="564" height="318" rx="20" fill="#151a18" stroke="#29322f" stroke-width="3"/>
+  <rect x="28" y="30" width="564" height="54" rx="20" fill="#050706"/>
+  <circle cx="68" cy="57" r="9" fill="#b8ff1f"/>
+  <circle cx="98" cy="57" r="9" fill="#29322f"/>
+  <circle cx="128" cy="57" r="9" fill="#29322f"/>
+  <path d="M408 58h92" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+  <path d="M504 47l28 11-28 11 10-11z" fill="#b8ff1f"/>
+
+  <rect x="62" y="112" width="220" height="156" rx="14" fill="#101412" stroke="#29322f" stroke-width="3"/>
+  <rect x="84" y="136" width="92" height="12" rx="6" fill="#b8ff1f"/>
+  <rect x="84" y="166" width="152" height="10" rx="5" fill="#38423e"/>
+  <rect x="84" y="188" width="118" height="10" rx="5" fill="#38423e"/>
+  <path d="M92 236h38v-28h24v28h38v-52h24v52h38" fill="none" stroke="#b8ff1f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="240" cy="136" r="18" fill="#050706" stroke="#b8ff1f" stroke-width="3"/>
+  <path d="M240 118v18l14 10" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+
+  <rect x="320" y="112" width="238" height="156" rx="14" fill="#101412" stroke="#29322f" stroke-width="3"/>
+  <path d="M350 223c34-54 68-20 96-72 25 38 48 26 82 4" fill="none" stroke="#b8ff1f" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M350 233c34-22 64-26 94-12 32 14 56 8 84-28" fill="none" stroke="#ffffff" stroke-opacity=".7" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="350" y="136" width="76" height="12" rx="6" fill="#ffffff"/>
+  <rect x="350" y="158" width="56" height="10" rx="5" fill="#38423e"/>
+
+  <rect x="92" y="300" width="436" height="26" rx="13" fill="#050706"/>
+  <rect x="118" y="280" width="84" height="48" rx="20" fill="#b8ff1f" stroke="#050706" stroke-width="4"/>
+  <circle cx="160" cy="246" r="32" fill="#202823" stroke="#b8ff1f" stroke-width="4"/>
+  <path d="M134 241c16-28 51-28 62-4-12-3-22-9-31-19-8 12-18 19-31 23z" fill="#050706"/>
+  <rect x="133" y="269" width="54" height="28" rx="14" fill="#050706"/>
+  <circle cx="149" cy="250" r="3" fill="#ffffff"/>
+  <circle cx="173" cy="250" r="3" fill="#ffffff"/>
+  <path d="M151 263c7 6 15 6 22 0" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+
+  <rect x="408" y="280" width="86" height="48" rx="20" fill="#ffffff" stroke="#050706" stroke-width="4"/>
+  <circle cx="451" cy="246" r="32" fill="#202823" stroke="#ffffff" stroke-width="4"/>
+  <path d="M426 238c9-28 42-35 56-8 5 11 4 20-2 28-14-10-24-20-30-32-5 12-13 18-24 12z" fill="#050706"/>
+  <rect x="426" y="269" width="52" height="28" rx="14" fill="#050706"/>
+  <circle cx="441" cy="250" r="3" fill="#b8ff1f"/>
+  <circle cx="465" cy="250" r="3" fill="#b8ff1f"/>
+  <path d="M443 263c7 5 14 5 21 0" fill="none" stroke="#b8ff1f" stroke-width="3" stroke-linecap="round"/>
+
+  <rect x="240" y="292" width="124" height="36" rx="18" fill="#151a18" stroke="#29322f" stroke-width="4"/>
+  <rect x="260" y="306" width="38" height="8" rx="4" fill="#b8ff1f"/>
+  <rect x="308" y="306" width="36" height="8" rx="4" fill="#ffffff"/>
+  <path d="M290 86l12 24 27 4-20 18 5 26-24-13-24 13 5-26-20-18 27-4z" fill="#b8ff1f" stroke="#050706" stroke-width="4" stroke-linejoin="round"/>
+</svg>

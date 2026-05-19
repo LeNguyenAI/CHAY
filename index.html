@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CHẠY - bật mode làm việc</title>
+    <meta name="description" content="CHẠY là dashboard Free giúp freelancer marketing bắt đầu phiên tập trung, chọn việc chính và giữ nhịp làm mỗi ngày.">
+    <meta name="theme-color" content="#0d100f">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="onboarding-modal" id="onboardingModal" aria-hidden="true">
+      <section class="onboarding-card" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+        <p class="eyebrow">Thiết lập trong 30 giây</p>
+        <h2 id="onboardingTitle">Cá nhân hóa bàn làm việc của bạn</h2>
+        <p class="hero-copy">Chọn kiểu công việc, mục tiêu và nhịp làm. CHẠY sẽ gợi ý template, câu nhắc và cách bắt đầu phù hợp hơn.</p>
+
+        <div class="setup-grid">
+          <label>
+            Tôi thường làm
+            <select id="roleSelect">
+              <option value="content">Content / Social</option>
+              <option value="ads">Paid Ads</option>
+              <option value="seo">SEO</option>
+              <option value="strategy">Strategy / Branding</option>
+              <option value="email">Email / CRM</option>
+            </select>
+          </label>
+          <label>
+            Mục tiêu chính
+            <select id="goalSelect">
+              <option value="delivery">Giao việc đều cho khách</option>
+              <option value="clients">Kiếm thêm khách mới</option>
+              <option value="discipline">Giữ kỷ luật mỗi ngày</option>
+              <option value="burnout">Giảm uể oải và quá tải</option>
+            </select>
+          </label>
+          <label>
+            Nhịp làm hợp nhất
+            <select id="rhythmSelect">
+              <option value="morning">Sáng tập trung sâu</option>
+              <option value="afternoon">Chiều xử lý việc khách</option>
+              <option value="night">Tối yên tĩnh</option>
+              <option value="flex">Linh hoạt theo lịch</option>
+            </select>
+          </label>
+        </div>
+
+        <button class="primary-button" id="finishOnboardingButton" type="button">
+          <span class="button-icon" aria-hidden="true">✓</span>
+          Dùng bản Free
+        </button>
+      </section>
+    </div>
+
+    <div class="settings-modal" id="settingsModal" aria-hidden="true">
+      <section class="settings-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="settings-head">
+          <div>
+            <p class="eyebrow">Cài đặt Free</p>
+            <h2 id="settingsTitle">Chỉnh CHẠY theo gu làm việc</h2>
+            <p class="hero-copy">Sửa câu nhắc, template và nhãn bảng hôm nay để app nói đúng ngôn ngữ của bạn.</p>
+          </div>
+          <button class="icon-button" id="closeSettingsButton" type="button" aria-label="Đóng cài đặt">×</button>
+        </div>
+
+        <div class="settings-grid">
+          <section class="settings-section">
+            <h3>Câu nhắc của tôi</h3>
+            <p class="feature-note">Mỗi dòng là một câu. Nên viết ngắn, rõ, đúng kiểu bạn muốn tự nhắc mình.</p>
+            <textarea id="quoteSettingsInput" rows="7"></textarea>
+          </section>
+
+          <section class="settings-section">
+            <h3>Template của tôi</h3>
+            <p class="feature-note">Chọn một template rồi sửa tên, mô tả và 3 bước việc. App sẽ dùng bản này cho lần sau.</p>
+            <label>
+              Chọn template
+              <select id="templateSettingsSelect"></select>
+            </label>
+            <label>
+              Tên template
+              <input id="templateTitleInput" type="text" maxlength="42">
+            </label>
+            <label>
+              Mô tả ngắn
+              <input id="templateNoteInput" type="text" maxlength="96">
+            </label>
+            <label>
+              Bước 1
+              <input class="templateTaskInput" type="text" maxlength="86">
+            </label>
+            <label>
+              Bước 2
+              <input class="templateTaskInput" type="text" maxlength="86">
+            </label>
+            <label>
+              Bước 3
+              <input class="templateTaskInput" type="text" maxlength="86">
+            </label>
+          </section>
+
+          <section class="settings-section">
+            <h3>Nhãn bảng hôm nay</h3>
+            <p class="feature-note">Đổi tên 4 ô nếu cách chia hiện tại chưa hợp workflow của bạn.</p>
+            <label>
+              Ô 1
+              <input id="moneyLabelInput" type="text" maxlength="28">
+            </label>
+            <label>
+              Ô 2
+              <input id="deliveryLabelInput" type="text" maxlength="28">
+            </label>
+            <label>
+              Ô 3
+              <input id="assetLabelInput" type="text" maxlength="28">
+            </label>
+            <label>
+              Ô 4
+              <input id="selfcareLabelInput" type="text" maxlength="28">
+            </label>
+          </section>
+        </div>
+
+        <div class="settings-actions">
+          <button class="ghost-button" id="resetTodayButton" type="button">
+            <span class="button-icon" aria-hidden="true">↺</span>
+            Reset hôm nay
+          </button>
+          <button class="ghost-button" id="resetSettingsButton" type="button">
+            <span class="button-icon" aria-hidden="true">↺</span>
+            Khôi phục mặc định
+          </button>
+          <button class="primary-button" id="saveSettingsButton" type="button">
+            <span class="button-icon" aria-hidden="true">✓</span>
+            Lưu cài đặt
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <main class="app-shell">
+      <aside class="sidebar" aria-label="Bảng điều khiển ngày làm việc">
+        <div class="brand">
+          <div class="brand-logo-card">
+            <img src="assets/chay-logo.png" alt="Logo CHẠY">
+          </div>
+          <div>
+            <p class="eyebrow">Marketing freelancer</p>
+            <h1 class="sr-only">CHẠY</h1>
+            <p class="brand-line">Dashboard bật mode làm việc</p>
+          </div>
+        </div>
+
+        <img class="desk-art" src="assets/freelance-desk.svg" alt="Nhóm marketing chuyên nghiệp đang theo dõi chiến dịch trên bảng điều khiển">
+
+        <section class="side-panel">
+          <p class="panel-label">Nhịp hôm nay</p>
+          <p class="feature-note">Theo dõi mức hoàn thành và số ngày bạn giữ được nhịp làm việc đều đặn.</p>
+          <div class="score-row">
+            <div>
+              <strong id="focusScore">0%</strong>
+              <span>hoàn thành</span>
+            </div>
+            <div>
+              <strong id="streakDays">0</strong>
+              <span>ngày giữ nhịp</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="side-panel">
+          <p class="panel-label">Hồ sơ làm việc</p>
+          <p class="feature-note">App dùng hồ sơ này để gợi ý template và câu nhắc hợp hơn với kiểu việc của bạn.</p>
+          <div class="profile-chip" id="profileChip">Bản Free · Marketing freelancer</div>
+          <button class="ghost-button full-button" id="editProfileButton" type="button">
+            <span class="button-icon" aria-hidden="true">⚙</span>
+            Chỉnh hồ sơ
+          </button>
+          <button class="ghost-button full-button stacked-button" id="openSettingsButton" type="button">
+            <span class="button-icon" aria-hidden="true">✎</span>
+            Cài đặt câu nhắc
+          </button>
+        </section>
+
+        <section class="side-panel quote-panel">
+          <p class="panel-label">Cú hích nhanh</p>
+          <p class="feature-note">Một câu nhắc ngắn để kéo bạn quay lại hành động khi bắt đầu thấy chùng xuống.</p>
+          <blockquote id="dailyQuote"></blockquote>
+          <button class="ghost-button" id="newQuoteButton" type="button">
+            <span class="button-icon" aria-hidden="true">✨</span>
+            Đổi câu nhắc
+          </button>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="todayLabel"></p>
+            <h2>Không cần hoàn hảo. Chỉ cần bật lên và CHẠY.</h2>
+            <p class="hero-copy">Dashboard tối gọn cho freelancer marketing: chọn việc đáng làm, bật sprint, ghi cam kết và giữ nhịp như đang có team chờ bạn bàn giao.</p>
+          </div>
+          <div class="hero-action">
+            <button class="primary-button" id="startDayButton" type="button">
+              <span class="button-icon" aria-hidden="true">⚡</span>
+              Bật mode CHẠY
+            </button>
+            <p class="button-help">Bấm để mở Focus Mode, chạy timer và bắt đầu việc đầu tiên.</p>
+          </div>
+        </header>
+
+        <nav class="mobile-nav" aria-label="Điều hướng nhanh">
+          <a href="#commandCenter">Hôm nay</a>
+          <a href="#templatesPanel">Template</a>
+          <a href="#focusPanel">Focus</a>
+          <a href="#reviewPanel">Tuần</a>
+        </nav>
+
+        <section class="checkin-band" aria-label="Chọn trạng thái năng lượng">
+          <div>
+            <p class="panel-label">Bạn đang ở mức nào?</p>
+            <p class="feature-note">Chọn trạng thái thật của bạn để nhận một gợi ý bắt đầu phù hợp, không ép bản thân quá sức.</p>
+            <div class="energy-options" id="energyOptions">
+              <button class="energy-button" data-energy="low" type="button"><span aria-hidden="true">☁</span> Uể oải</button>
+              <button class="energy-button active" data-energy="steady" type="button"><span aria-hidden="true">☀</span> Ổn định</button>
+              <button class="energy-button" data-energy="sharp" type="button"><span aria-hidden="true">★</span> Sẵn sàng</button>
+            </div>
+          </div>
+          <div class="nudge-box">
+            <p id="energyNudge"></p>
+          </div>
+        </section>
+
+        <section class="command-center tool-panel" id="commandCenter">
+          <div class="section-heading">
+            <div>
+              <p class="panel-label">Bảng thắng hôm nay</p>
+              <h3>Chọn 4 việc để ngày không trôi vô nghĩa</h3>
+              <p class="feature-note">Ghi nhanh việc liên quan đến tiền, deadline, tài sản dài hạn và năng lượng cá nhân.</p>
+            </div>
+            <button class="ghost-button" id="saveCommandButton" type="button">
+              <span class="button-icon" aria-hidden="true">✦</span>
+              Lưu ngày
+            </button>
+          </div>
+          <div class="command-grid">
+            <label>
+              <span id="moneyLabelText">Tiền / khách mới</span>
+              <input id="moneyInput" type="text" maxlength="96" placeholder="Ví dụ: gửi proposal / follow-up lead nóng">
+            </label>
+            <label>
+              <span id="deliveryLabelText">Deadline / bàn giao</span>
+              <input id="deliveryInput" type="text" maxlength="96" placeholder="Ví dụ: bàn giao report, outline, media plan">
+            </label>
+            <label>
+              <span id="assetLabelText">Xây tài sản</span>
+              <input id="assetInput" type="text" maxlength="96" placeholder="Ví dụ: case study, portfolio, template, bài chia sẻ">
+            </label>
+            <label>
+              <span id="selfcareLabelText">Giữ năng lượng</span>
+              <input id="selfcareInput" type="text" maxlength="96" placeholder="Ví dụ: đi bộ 10 phút, nghỉ mắt, ăn đúng bữa">
+            </label>
+          </div>
+        </section>
+
+        <section class="grid">
+          <article class="tool-panel templates-panel" id="templatesPanel">
+            <div class="section-heading">
+              <div>
+                <p class="panel-label">Mẫu việc marketing</p>
+                <h3>Bấm một mẫu để có checklist ngay</h3>
+                <p class="feature-note">Dành cho lúc não chưa muốn nghĩ. Chọn mẫu, app tự tạo 3 bước việc.</p>
+              </div>
+            </div>
+            <div class="template-grid" id="templateGrid"></div>
+          </article>
+
+          <article class="tool-panel priority-panel">
+            <div class="section-heading">
+              <div>
+                <p class="panel-label">3 việc chính</p>
+                <h3>Làm xong 3 việc là thắng ngày</h3>
+                <p class="feature-note">Giới hạn để bạn bớt ngợp. Hãy chọn việc có đầu ra nhìn thấy được.</p>
+              </div>
+              <button class="icon-button" id="clearDoneButton" type="button" aria-label="Ẩn việc đã xong" title="Ẩn việc đã xong">🧹</button>
+            </div>
+
+            <form class="task-form" id="taskForm">
+              <input id="taskInput" type="text" maxlength="86" placeholder="Ví dụ: viết outline nội dung cho khách A">
+              <button class="primary-button compact" type="submit">
+                <span class="button-icon" aria-hidden="true">＋</span>
+                Thêm
+              </button>
+            </form>
+
+            <ul class="task-list" id="taskList"></ul>
+          </article>
+
+          <article class="tool-panel timer-panel" id="focusPanel">
+            <div class="section-heading">
+              <div>
+                <p class="panel-label">Phiên tập trung</p>
+                <h3>Chạy 1 phiên ngắn, ra 1 đầu việc</h3>
+                <p class="feature-note">Timer giúp bạn bắt đầu nhanh và biết khi nào được dừng.</p>
+              </div>
+              <select id="durationSelect" aria-label="Độ dài phiên tập trung">
+                <option value="15">15 phút</option>
+                <option value="25" selected>25 phút</option>
+                <option value="45">45 phút</option>
+              </select>
+            </div>
+
+            <div class="timer-face" aria-live="polite">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+                <circle class="ring-progress" id="timerRing" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <div>
+                <strong id="timerDisplay">25:00</strong>
+                <span id="timerState">Sẵn sàng</span>
+              </div>
+            </div>
+
+            <div class="timer-actions">
+              <button class="primary-button" id="timerToggleButton" type="button">
+                <span class="button-icon" aria-hidden="true">▶</span>
+                Chạy
+              </button>
+              <button class="ghost-button" id="timerResetButton" type="button">
+                <span class="button-icon" aria-hidden="true">↺</span>
+                Đặt lại
+              </button>
+              <button class="ghost-button" id="focusModeButton" type="button">
+                <span class="button-icon" aria-hidden="true">⛶</span>
+                Focus
+              </button>
+            </div>
+            <button class="rescue-button" id="rescueButton" type="button">Kẹt rồi, gợi ý bước nhỏ</button>
+          </article>
+
+          <article class="tool-panel brief-panel">
+            <div class="section-heading">
+              <div>
+                <p class="panel-label">Cam kết đầu ra</p>
+                <h3>Cuối phiên này phải có gì?</h3>
+                <p class="feature-note">Viết rõ sản phẩm cuối phiên để bạn không chỉ “ngồi làm” mà thật sự tạo ra thứ gì đó.</p>
+              </div>
+            </div>
+            <label for="commitmentInput">Cuối phiên này tôi sẽ có:</label>
+            <textarea id="commitmentInput" rows="5" maxlength="240" placeholder="Ví dụ: 5 hook quảng cáo, 1 lịch đăng bài, hoặc bản nháp email gửi khách..."></textarea>
+            <button class="ghost-button" id="saveCommitmentButton" type="button">
+              <span class="button-icon" aria-hidden="true">✦</span>
+              Lưu cam kết
+            </button>
+          </article>
+
+          <article class="tool-panel review-panel" id="reviewPanel">
+            <div class="section-heading">
+              <div>
+                <p class="panel-label">Review tuần</p>
+                <h3>Tuần này bạn chạy được bao nhiêu?</h3>
+                <p class="feature-note">Xem nhanh số phiên tập trung, việc đã xong và mức năng lượng hay gặp.</p>
+              </div>
+            </div>
+            <div class="review-grid">
+              <div><strong id="weekSprints">0</strong><span>sprint</span></div>
+              <div><strong id="weekTasks">0</strong><span>việc xong</span></div>
+              <div><strong id="weekEnergy">Ổn định</strong><span>năng lượng hay gặp</span></div>
+            </div>
+            <p class="review-insight" id="weekInsight"></p>
+          </article>
+
+          <article class="tool-panel log-panel">
+            <div class="section-heading">
+              <div>
+                <p class="panel-label">Lịch sử hôm nay</p>
+                <h3>Những lần bạn đã thật sự bắt tay vào việc</h3>
+                <p class="feature-note">Ghi lại lúc bắt đầu, lưu cam kết, hoàn thành sprint và tick xong việc.</p>
+              </div>
+            </div>
+            <ul class="activity-log" id="activityLog"></ul>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <section class="focus-overlay" id="focusOverlay" aria-hidden="true">
+      <button class="icon-button focus-close" id="closeFocusButton" type="button" aria-label="Đóng focus mode">×</button>
+      <p class="eyebrow">Focus mode</p>
+      <h2>Một phiên. Một đầu ra.</h2>
+      <div class="focus-time" id="focusTimerDisplay">25:00</div>
+      <p id="focusCommitmentText">Viết cam kết bàn giao để não biết cần kết thúc ở đâu.</p>
+      <div class="timer-actions">
+        <button class="primary-button" id="focusToggleButton" type="button">
+          <span class="button-icon" aria-hidden="true">▶</span>
+          Chạy
+        </button>
+        <button class="ghost-button" id="focusRescueButton" type="button">
+          <span class="button-icon" aria-hidden="true">★</span>
+          Bước nhỏ
+        </button>
+      </div>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>
