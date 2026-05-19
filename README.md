@@ -1,6 +1,6 @@
 # CHẠY
 
-CHẠY là một web app Free giúp freelancer marketing bật phiên tập trung, chọn 3 việc chính, ghi cam kết đầu ra và theo dõi nhịp làm việc hằng ngày.
+CHẠY là một web app giúp freelancer marketing bật phiên tập trung, chọn 3 việc chính, ghi cam kết đầu ra và theo dõi nhịp làm việc hằng ngày.
 
 ## Cách dùng
 

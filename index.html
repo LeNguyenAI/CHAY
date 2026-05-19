@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CHẠY - bật mode làm việc</title>
-    <meta name="description" content="CHẠY là dashboard Free giúp freelancer marketing bắt đầu phiên tập trung, chọn việc chính và giữ nhịp làm mỗi ngày.">
+    <meta name="description" content="CHẠY giúp freelancer marketing bắt đầu phiên tập trung, chọn việc chính và giữ nhịp làm mỗi ngày.">
     <meta name="theme-color" content="#0D0F12">
     <link rel="stylesheet" href="styles.css">
   </head>
@@ -48,7 +48,7 @@
 
         <button class="primary-button" id="finishOnboardingButton" type="button">
           <span class="button-icon" aria-hidden="true">✓</span>
-          Dùng bản Free
+          Bắt đầu dùng
         </button>
       </section>
     </div>
@@ -57,7 +57,7 @@
       <section class="settings-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
         <div class="settings-head">
           <div>
-            <p class="eyebrow">Cài đặt Free</p>
+            <p class="eyebrow">Cài đặt</p>
             <h2 id="settingsTitle">Chỉnh CHẠY theo gu làm việc</h2>
             <p class="hero-copy">Sửa câu nhắc, template và nhãn bảng hôm nay để app nói đúng ngôn ngữ của bạn.</p>
           </div>
@@ -139,6 +139,50 @@
       </section>
     </div>
 
+    <div class="guide-modal" id="guideModal" aria-hidden="true">
+      <section class="guide-card" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+        <div class="settings-head">
+          <div>
+            <p class="eyebrow">Hướng dẫn sử dụng</p>
+            <h2 id="guideTitle">Cách dùng CHẠY cho một phiên làm việc</h2>
+            <p class="hero-copy">Dành cho lúc bạn muốn bắt đầu nhanh, không muốn ngồi nghĩ hệ thống quá nhiều.</p>
+          </div>
+          <button class="icon-button" id="closeGuideButton" type="button" aria-label="Đóng hướng dẫn">×</button>
+        </div>
+
+        <div class="guide-grid full-guide">
+          <div>
+            <strong>1. Chọn trạng thái năng lượng</strong>
+            <span>Chọn Uể oải, Ổn định hoặc Sẵn sàng. App sẽ đổi gợi ý bắt đầu cho hợp trạng thái hiện tại.</span>
+          </div>
+          <div>
+            <strong>2. Bấm mẫu việc nếu chưa biết làm gì</strong>
+            <span>Mẫu việc sẽ tự tạo 3 việc chính. Ví dụ Content, Ads, SEO, Client delivery, Email/CRM.</span>
+          </div>
+          <div>
+            <strong>3. Ghi bảng thắng hôm nay</strong>
+            <span>Điền nhanh việc liên quan đến khách mới, deadline, tài sản dài hạn và năng lượng cá nhân.</span>
+          </div>
+          <div>
+            <strong>4. Bật RUN MODE</strong>
+            <span>Bấm Bật mode CHẠY để mở màn hình tập trung, chạy timer và bắt đầu việc đầu tiên.</span>
+          </div>
+          <div>
+            <strong>5. Kẹt thì bấm gợi ý bước nhỏ</strong>
+            <span>Nút này sẽ đưa ra một hành động rất nhỏ để bạn thoát trạng thái đứng hình.</span>
+          </div>
+          <div>
+            <strong>6. Tick việc đã xong</strong>
+            <span>Mỗi việc hoàn thành sẽ được ghi vào lịch sử hôm nay và cộng vào review tuần.</span>
+          </div>
+          <div>
+            <strong>7. Cài đặt theo gu của bạn</strong>
+            <span>Trong Cài đặt, bạn có thể sửa câu nhắc, template và nhãn bảng hôm nay.</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
     <main class="app-shell">
       <aside class="sidebar" aria-label="Bảng điều khiển ngày làm việc">
         <div class="brand">
@@ -172,7 +216,7 @@
         <section class="side-panel">
           <p class="panel-label">Hồ sơ làm việc</p>
           <p class="feature-note">App dùng hồ sơ này để gợi ý template và câu nhắc hợp hơn với kiểu việc của bạn.</p>
-          <div class="profile-chip" id="profileChip">Bản Free · Marketing freelancer</div>
+          <div class="profile-chip" id="profileChip">Marketing freelancer</div>
           <button class="ghost-button full-button" id="editProfileButton" type="button">
             <span class="button-icon" aria-hidden="true">⚙</span>
             Chỉnh hồ sơ
@@ -199,11 +243,11 @@
           <div class="hero-copy-block">
             <p class="eyebrow" id="todayLabel"></p>
             <h2>Bật mode làm việc.</h2>
-            <p class="hero-copy">CHAY giúp marketer, freelancer và creator ngừng trôi trong trạng thái “để lát nữa” bằng một phiên chạy việc ngắn, rõ đầu ra, ít ma sát.</p>
-            <div class="hero-pills" aria-label="Giá trị chính của CHAY">
-              <span>Anti-procrastination</span>
-              <span>Creator focus</span>
-              <span>Tiny progress daily</span>
+            <p class="hero-copy">CHẠY giúp marketer, freelancer và creator ngừng trôi trong trạng thái “để lát nữa” bằng một phiên chạy việc ngắn, rõ đầu ra, ít ma sát.</p>
+            <div class="hero-pills info-chips" aria-label="CHẠY phù hợp với ai">
+              <span>Dành cho người hay trì hoãn</span>
+              <span>Tập trung cho creator</span>
+              <span>Tiến bộ nhỏ mỗi ngày</span>
             </div>
           </div>
           <div class="hero-run-card">
@@ -248,7 +292,7 @@
             <p class="panel-label">RUN MODE</p>
             <h3>Không gian tập trung cho người làm sáng tạo</h3>
             <p class="feature-note">Một màn hình tối, timer rõ, lời nhắc nhỏ và ít thứ gây nhiễu. Dành cho lúc bạn biết cần làm, nhưng não vẫn muốn né.</p>
-            <div class="run-mode-prompts">
+            <div class="run-mode-prompts info-chips" aria-label="Nguyên tắc của RUN MODE">
               <span>Làm bản nháp trước.</span>
               <span>Không cần hay ngay.</span>
               <span>Chỉ cần có cái để sửa.</span>
@@ -293,6 +337,7 @@
               </button>
             </div>
             <button class="rescue-button" id="rescueButton" type="button">Kẹt rồi, gợi ý bước nhỏ</button>
+            <div class="rescue-output" id="rescueOutput" aria-live="polite"></div>
           </div>
         </section>
 
@@ -338,9 +383,13 @@
               </div>
             </div>
             <div class="template-grid" id="templateGrid"></div>
+            <div class="template-feedback" id="templateFeedback" aria-live="polite">
+              <strong>Chưa chọn mẫu nào.</strong>
+              <span>Bấm một mẫu để CHẠY tạo 3 việc chính và cam kết đầu ra cho bạn.</span>
+            </div>
           </article>
 
-          <article class="tool-panel priority-panel reveal">
+          <article class="tool-panel priority-panel reveal" id="taskPanel">
             <div class="section-heading">
               <div>
                 <p class="panel-label">3 việc chính</p>
@@ -404,8 +453,25 @@
             <ul class="activity-log" id="activityLog"></ul>
           </article>
         </section>
+
+        <section class="contact-section reveal">
+          <article class="tool-panel" id="contactPanel">
+            <p class="panel-label">Liên hệ</p>
+            <h3>Góp ý để CHẠY tốt hơn</h3>
+            <p class="feature-note">Nếu bạn muốn thêm workflow cho content, ads, SEO, creator hoặc freelancer, gửi feedback tại Facebook bên dưới.</p>
+            <a class="contact-link" href="https://fb.com/lethainguyen.net" target="_blank" rel="noreferrer">Fb.com/lethainguyen.net</a>
+          </article>
+        </section>
+
+        <footer class="site-footer">
+          <span>© CHẠY</span>
+          <a href="https://fb.com/lethainguyen.net" target="_blank" rel="noreferrer">Fb.com/lethainguyen.net</a>
+        </footer>
       </section>
     </main>
+
+    <button class="scroll-top-button" id="scrollTopButton" type="button" aria-label="Cuộn lên đầu">↑</button>
+    <button class="guide-help-button" id="openGuideButton" type="button" aria-label="Hướng dẫn sử dụng" title="Hướng dẫn sử dụng">?</button>
 
     <section class="focus-overlay" id="focusOverlay" aria-hidden="true">
       <button class="icon-button focus-close" id="closeFocusButton" type="button" aria-label="Đóng focus mode">×</button>

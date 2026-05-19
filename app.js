@@ -26,11 +26,11 @@ const goalLabels = {
 
 const defaultQuotes = [
   "Làm trước rồi mới có động lực. Đừng đợi não thuyết phục bạn.",
-  "Một bản nháp xấu vẫn thắng một ý tưởng đẹp nằm im.",
-  "Hôm nay không cần bùng nổ. Chỉ cần có một thứ được đẩy về phía trước.",
-  "Nếu đang né việc, thu nhỏ nó lại cho đến khi bạn chịu bắt đầu.",
-  "Creator không thiếu ý tưởng. Thứ dễ thiếu là một phiên đủ yên để làm ra bản nháp.",
-  "Không cần hoàn hảo. Chỉ cần bật lên và CHAY."
+  "Bản đầu tiên chưa cần hay. Chỉ cần viết ra để còn sửa.",
+  "Hôm nay không cần làm quá nhiều. Chỉ cần xong một việc thật sự quan trọng.",
+  "Nếu đang né việc, hãy làm nó nhỏ lại: mở file, viết một dòng, gửi một tin nhắn.",
+  "Người làm sáng tạo không thiếu ý tưởng. Thứ cần là một khoảng yên để bắt đầu.",
+  "Không cần hoàn hảo. Chỉ cần bật lên và CHẠY."
 ];
 
 const nudges = {
@@ -93,10 +93,10 @@ const defaultTemplates = [
 
 const rescueSteps = [
   "Mở đúng file cần làm. Chỉ mở thôi cũng được, nhưng mở ngay.",
-  "Viết 3 gạch đầu dòng xấu nhất có thể. Vật liệu thô trước, hay tính sau.",
-  "Chọn một khách hàng hoặc một chiến dịch duy nhất. Đừng tối ưu cả cuộc đời trong một phiên.",
-  "Đặt timer 15 phút và làm phần dễ nhất: tiêu đề, outline, số liệu hoặc email update.",
-  "Viết câu này vào cam kết: 'Cuối phiên tôi sẽ có một bản nháp đủ để sửa tiếp.'"
+  "Viết 3 ý ngắn, chưa cần hay. Có chữ trên màn hình là đã bắt đầu.",
+  "Chọn đúng một khách hàng hoặc một việc. Đừng ôm quá nhiều trong một phiên.",
+  "Đặt timer 15 phút và làm phần dễ nhất: tiêu đề, dàn ý, số liệu hoặc tin nhắn cập nhật.",
+  "Tự hứa: cuối phiên này mình chỉ cần có bản nháp để sửa tiếp."
 ];
 
 const defaultState = {
@@ -168,6 +168,7 @@ const el = {
   selfcareLabelText: document.querySelector("#selfcareLabelText"),
   saveCommandButton: document.querySelector("#saveCommandButton"),
   templateGrid: document.querySelector("#templateGrid"),
+  templateFeedback: document.querySelector("#templateFeedback"),
   taskForm: document.querySelector("#taskForm"),
   taskInput: document.querySelector("#taskInput"),
   taskList: document.querySelector("#taskList"),
@@ -180,6 +181,7 @@ const el = {
   timerResetButton: document.querySelector("#timerResetButton"),
   focusModeButton: document.querySelector("#focusModeButton"),
   rescueButton: document.querySelector("#rescueButton"),
+  rescueOutput: document.querySelector("#rescueOutput"),
   commitmentInput: document.querySelector("#commitmentInput"),
   saveCommitmentButton: document.querySelector("#saveCommitmentButton"),
   weekSprints: document.querySelector("#weekSprints"),
@@ -206,7 +208,11 @@ const el = {
   selfcareLabelInput: document.querySelector("#selfcareLabelInput"),
   resetTodayButton: document.querySelector("#resetTodayButton"),
   resetSettingsButton: document.querySelector("#resetSettingsButton"),
-  saveSettingsButton: document.querySelector("#saveSettingsButton")
+  saveSettingsButton: document.querySelector("#saveSettingsButton"),
+  scrollTopButton: document.querySelector("#scrollTopButton"),
+  guideModal: document.querySelector("#guideModal"),
+  openGuideButton: document.querySelector("#openGuideButton"),
+  closeGuideButton: document.querySelector("#closeGuideButton")
 };
 
 function loadState() {
@@ -295,7 +301,7 @@ function render() {
   el.roleSelect.value = state.profile.role;
   el.goalSelect.value = state.profile.goal;
   el.rhythmSelect.value = state.profile.rhythm;
-  el.profileChip.textContent = `Free · ${roleLabels[state.profile.role]} · ${goalLabels[state.profile.goal]}`;
+  el.profileChip.textContent = `${roleLabels[state.profile.role]} · ${goalLabels[state.profile.goal]}`;
   el.moneyLabelText.textContent = state.commandLabels.money;
   el.deliveryLabelText.textContent = state.commandLabels.delivery;
   el.assetLabelText.textContent = state.commandLabels.asset;
@@ -335,6 +341,30 @@ function renderTemplates() {
     `;
     button.addEventListener("click", () => applyTemplate(template.id));
     el.templateGrid.append(button);
+  });
+  renderTemplateFeedback();
+}
+
+function renderTemplateFeedback() {
+  const template = state.templates.find((item) => item.id === state.selectedTemplate);
+  if (!template) {
+    el.templateFeedback.innerHTML = `
+      <strong>Chưa chọn mẫu nào.</strong>
+      <span>Bấm một mẫu để CHẠY tạo 3 việc chính và cam kết đầu ra cho bạn.</span>
+    `;
+    return;
+  }
+
+  el.templateFeedback.innerHTML = `
+    <strong>Đã tạo checklist từ ${template.title}.</strong>
+    <span>3 việc chính ở bên dưới đã được thay bằng workflow này.</span>
+    <button class="ghost-button jump-to-tasks-button" type="button">
+      <span class="button-icon" aria-hidden="true">↓</span>
+      Xem checklist
+    </button>
+  `;
+  el.templateFeedback.querySelector(".jump-to-tasks-button").addEventListener("click", () => {
+    document.querySelector("#taskPanel").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 }
 
@@ -484,6 +514,9 @@ function applyTemplate(templateId) {
   state.commitment = `Cuối phiên tôi sẽ có: ${template.note.toLowerCase()}`;
   addLog(`Đã áp dụng template: ${template.title}.`);
   saveAndRender();
+  window.setTimeout(() => {
+    document.querySelector("#taskPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 80);
 }
 
 function toggleTask(id) {
@@ -548,7 +581,7 @@ function saveProfile() {
     const templateId = state.profile.role === "content" ? "content" : state.profile.role;
     applyTemplate(templateId);
   }
-  addLog(`Đã thiết lập hồ sơ Free cho ${roleLabels[state.profile.role]}.`);
+  addLog(`Đã thiết lập hồ sơ cho ${roleLabels[state.profile.role]}.`);
   saveAndRender();
 }
 
@@ -635,6 +668,11 @@ function toggleSettings(show) {
   if (show) renderSettings();
   el.settingsModal.classList.toggle("show", show);
   el.settingsModal.setAttribute("aria-hidden", show ? "false" : "true");
+}
+
+function toggleGuide(show) {
+  el.guideModal.classList.toggle("show", show);
+  el.guideModal.setAttribute("aria-hidden", show ? "false" : "true");
 }
 
 function renderSettings() {
@@ -755,7 +793,9 @@ function rescue() {
   const step = rescueSteps[Math.floor(Math.random() * rescueSteps.length)];
   addLog(`Bước nhỏ: ${step}`);
   state.commitment = step;
+  el.rescueOutput.textContent = step;
   saveAndRender();
+  el.rescueOutput.textContent = step;
 }
 
 function playChime() {
@@ -817,6 +857,11 @@ el.templateSettingsSelect.addEventListener("change", renderSelectedTemplateSetti
 el.saveSettingsButton.addEventListener("click", saveSettings);
 el.resetTodayButton.addEventListener("click", resetToday);
 el.resetSettingsButton.addEventListener("click", resetSettings);
+el.scrollTopButton.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+el.openGuideButton.addEventListener("click", () => toggleGuide(true));
+el.closeGuideButton.addEventListener("click", () => toggleGuide(false));
 el.durationSelect.addEventListener("change", (event) => setDuration(event.target.value));
 el.timerToggleButton.addEventListener("click", toggleTimer);
 el.focusToggleButton.addEventListener("click", toggleTimer);
