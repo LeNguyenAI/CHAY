@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=momentum-1">
   </head>
   <body>
     <div class="onboarding-modal" id="onboardingModal" aria-hidden="true">
@@ -272,6 +272,13 @@
                 Quick win ngay
               </button>
               <span>1 việc nhỏ, vào phiên ngay.</span>
+            </div>
+            <div class="momentum-return" id="momentumReturnCard" hidden aria-live="polite">
+              <div>
+                <strong id="momentumReturnTitle">Tiếp tục nhịp trước?</strong>
+                <span id="momentumReturnCopy">Quay lại bước nhỏ tiếp theo?</span>
+              </div>
+              <button class="ghost-button compact" id="momentumReturnButton" type="button">Tiếp tục nhẹ</button>
             </div>
             <div class="daily-loop" aria-label="Tiến độ hôm nay">
               <div>
@@ -558,6 +565,6 @@
       </div>
     </section>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=momentum-1"></script>
   </body>
 </html>

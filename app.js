@@ -206,6 +206,21 @@ const contextualStepRules = [
   }
 ];
 
+const continuationPrompts = [
+  {
+    title: "Tiếp tục nhịp trước?",
+    copy: "Quay lại bước nhỏ tiếp theo?"
+  },
+  {
+    title: "Chỉ cần thêm 5 phút nữa thôi.",
+    copy: "Không cần làm nhiều. Mở lại đúng điểm đang dở."
+  },
+  {
+    title: "Nhịp vẫn còn ở đây.",
+    copy: "Lấy lại một bước nhỏ, rồi để timer dẫn phần còn lại."
+  }
+];
+
 const defaultState = {
   date: TODAY,
   tasks: [],
@@ -239,7 +254,11 @@ const defaultState = {
   metrics: {},
   session: null,
   lastDuration: 25,
-  ambientSound: "off"
+  ambientSound: "off",
+  returnPrompt: {
+    lastSeenAt: "",
+    dismissedAt: ""
+  }
 };
 
 let state = loadState();
@@ -276,6 +295,10 @@ const el = {
   heroRescueButton: document.querySelector("#heroRescueButton"),
   heroRescueOutput: document.querySelector("#heroRescueOutput"),
   heroQuickWinButton: document.querySelector("#heroQuickWinButton"),
+  momentumReturnCard: document.querySelector("#momentumReturnCard"),
+  momentumReturnTitle: document.querySelector("#momentumReturnTitle"),
+  momentumReturnCopy: document.querySelector("#momentumReturnCopy"),
+  momentumReturnButton: document.querySelector("#momentumReturnButton"),
   heroDurationSelect: document.querySelector("#heroDurationSelect"),
   customDurationField: document.querySelector("#customDurationField"),
   customDurationInput: document.querySelector("#customDurationInput"),
@@ -365,7 +388,8 @@ function loadState() {
     templates: mergeDefaultTemplates((saved || {}).templates),
     metrics: { ...((saved || {}).metrics || {}) },
     session: (saved || {}).session || null,
-    lastDuration: (saved || {}).lastDuration || defaultState.lastDuration
+    lastDuration: (saved || {}).lastDuration || defaultState.lastDuration,
+    returnPrompt: { ...defaultState.returnPrompt, ...((saved || {}).returnPrompt || {}) }
   };
 
   if (merged.date !== TODAY) {
@@ -510,6 +534,7 @@ function render() {
   renderStats();
   renderWeeklyReview();
   renderLog();
+  renderMomentumReturn();
   updateTimerDisplay();
   updateTimerButtons();
   syncFocusView();
@@ -643,6 +668,62 @@ function getStreakCopy(metrics = todayMetrics()) {
   if (state.lastCompletedDate === TODAY) return "Hôm nay đã có bằng chứng.";
   if (state.streak > 1) return "Một phiên ngắn là đủ để nối tiếp.";
   return "Bắt đầu lại một nhịp mới.";
+}
+
+function getNextMomentumStep() {
+  const activeTask = state.tasks.find((task) => !task.done) || state.tasks[0];
+  if (state.session?.lastRescueStep) return state.session.lastRescueStep;
+  if (activeTask?.text) return activeTask.text;
+  return "Mở lại điểm đang dở.";
+}
+
+function hasMomentumToContinue() {
+  const hasOpenStep = state.tasks.some((task) => !task.done);
+  const metrics = todayMetrics();
+  return Boolean(
+    state.session ||
+    hasOpenStep ||
+    metrics.sprints ||
+    state.lastCompletedDate
+  );
+}
+
+function wasAwayForGentleReturn() {
+  if (!state.returnPrompt.lastSeenAt) return false;
+  const awayMs = Date.now() - new Date(state.returnPrompt.lastSeenAt).getTime();
+  return awayMs > 8 * 60 * 1000;
+}
+
+function recentlyDismissedReturnPrompt() {
+  if (!state.returnPrompt.dismissedAt) return false;
+  const dismissedMs = Date.now() - new Date(state.returnPrompt.dismissedAt).getTime();
+  return dismissedMs < 20 * 60 * 1000;
+}
+
+function getContinuationPrompt() {
+  const seed = [
+    state.session?.startedAt,
+    state.metrics[TODAY]?.sprints,
+    state.tasks.length
+  ].filter(Boolean).join("");
+  const index = seed.length % continuationPrompts.length;
+  return continuationPrompts[index];
+}
+
+function renderMomentumReturn() {
+  if (!el.momentumReturnCard) return;
+  const shouldShow = hasMomentumToContinue() && !recentlyDismissedReturnPrompt();
+  el.momentumReturnCard.hidden = !shouldShow;
+  el.momentumReturnCard.classList.toggle("after-drift", shouldShow && wasAwayForGentleReturn());
+
+  if (!shouldShow) return;
+
+  const prompt = getContinuationPrompt();
+  const step = getNextMomentumStep();
+  el.momentumReturnTitle.textContent = prompt.title;
+  el.momentumReturnCopy.textContent = state.session
+    ? prompt.copy
+    : `${prompt.copy} Bước tiếp theo: ${step}`;
 }
 
 function renderMomentumOutputs() {
@@ -1413,7 +1494,11 @@ function resetSettings() {
 }
 
 function activateRunMode() {
+  state.returnPrompt.dismissedAt = new Date().toISOString();
+
   if (state.session) {
+    saveState();
+    renderMomentumReturn();
     toggleFocusMode(true);
     updateTimerDisplay();
     updateTimerButtons();
@@ -1469,6 +1554,7 @@ function makeContextualRescueStep() {
 
 function rescue() {
   const step = makeContextualRescueStep();
+  state.returnPrompt.dismissedAt = new Date().toISOString();
   addLog(`Bước nhỏ: ${step}`);
   if (state.session) {
     state.session.lastRescueStep = step;
@@ -1744,6 +1830,12 @@ el.closeFocusButton.addEventListener("click", () => toggleFocusMode(false));
 el.ambientSoundSelect.addEventListener("change", (event) => setAmbientSound(event.target.value));
 el.heroRescueButton.addEventListener("click", rescue);
 el.heroQuickWinButton.addEventListener("click", instantQuickWinStart);
+el.momentumReturnButton.addEventListener("click", () => {
+  if (!state.session && state.tasks.some((task) => !task.done)) {
+    el.heroRescueOutput.textContent = getNextMomentumStep();
+  }
+  activateRunMode();
+});
 el.rescueButton.addEventListener("click", rescue);
 el.focusRescueButton.addEventListener("click", rescue);
 el.completeDoneButton.addEventListener("click", () => finishSession("Đã xong."));
@@ -1764,6 +1856,20 @@ document.addEventListener("pointerup", (event) => {
 
 document.addEventListener("pointercancel", () => {
   document.querySelectorAll(".is-pressing").forEach((target) => target.classList.remove("is-pressing"));
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    state.returnPrompt.lastSeenAt = new Date().toISOString();
+    saveState();
+    return;
+  }
+
+  if (hasMomentumToContinue()) {
+    state.returnPrompt.dismissedAt = "";
+    renderMomentumReturn();
+    saveState();
+  }
 });
 
 el.saveCommitmentButton.addEventListener("click", () => {
