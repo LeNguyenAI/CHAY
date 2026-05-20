@@ -140,6 +140,34 @@ const defaultTemplates = [
   }
 ];
 
+const quickWinStarts = [
+  {
+    task: "Viết 3 bullet đầu tiên.",
+    commitment: "3 bullet nháp đủ để sửa tiếp.",
+    step: "Mở file và viết 3 dòng thô."
+  },
+  {
+    task: "Mở file dang dở.",
+    commitment: "file dang dở đã được mở và có một chỉnh sửa nhỏ.",
+    step: "Mở file. Chạm vào đúng chỗ cần sửa."
+  },
+  {
+    task: "Sửa hook mở đầu.",
+    commitment: "1 hook mở đầu rõ hơn bản cũ.",
+    step: "Chỉ sửa câu đầu tiên."
+  },
+  {
+    task: "Gửi 1 follow-up.",
+    commitment: "1 tin nhắn follow-up đã được gửi hoặc soạn xong.",
+    step: "Viết một tin nhắn 2 câu."
+  },
+  {
+    task: "Chỉ làm 5 phút đầu.",
+    commitment: "5 phút tiến lên, dù chỉ là bản nháp xấu.",
+    step: "Bật timer và làm phần dễ nhất."
+  }
+];
+
 const rescueSteps = [
   "Mở file cần làm.",
   "Viết 3 bullet đầu tiên.",
@@ -189,7 +217,7 @@ const defaultState = {
   commitment: "",
   selectedTemplate: "",
   profile: {
-    onboarded: false,
+    onboarded: true,
     role: "content",
     goal: "delivery",
     rhythm: "morning"
@@ -327,7 +355,7 @@ function loadState() {
   const merged = {
     ...defaultState,
     ...(saved || {}),
-    profile: { ...defaultState.profile, ...((saved || {}).profile || {}) },
+    profile: { ...defaultState.profile, ...((saved || {}).profile || {}), onboarded: true },
     command: { ...defaultState.command, ...((saved || {}).command || {}) },
     commandLabels: { ...defaultState.commandLabels, ...((saved || {}).commandLabels || {}) },
     quotes: Array.isArray((saved || {}).quotes) && (saved || {}).quotes.length ? (saved || {}).quotes : [...defaultQuotes],
@@ -804,6 +832,10 @@ function applyTemplate(templateId, options = {}) {
   const { scrollToTasks = true } = options;
   const template = state.templates.find((item) => item.id === templateId);
   if (!template) return;
+  if (template.id === "quick-win" && isMobileViewport() && scrollToTasks) {
+    instantQuickWinStart();
+    return;
+  }
   state.selectedTemplate = template.id;
   state.tasks = template.tasks.map((task) => ({ id: makeId(), text: task, done: false }));
   state.commitment = `Cuối phiên tôi sẽ có: ${template.note.toLowerCase()}`;
@@ -813,6 +845,38 @@ function applyTemplate(templateId, options = {}) {
   window.setTimeout(() => {
     document.querySelector("#taskPanel").scrollIntoView({ behavior: "smooth", block: "start" });
   }, 80);
+}
+
+function isMobileViewport() {
+  return window.matchMedia("(max-width: 620px)").matches;
+}
+
+function pickQuickWinStart() {
+  return quickWinStarts[Math.floor(Math.random() * quickWinStarts.length)];
+}
+
+function instantQuickWinStart() {
+  const start = pickQuickWinStart();
+  clearSessionTicker();
+  state.profile.onboarded = true;
+  state.selectedTemplate = "quick-win";
+  state.tasks = [{ id: makeId(), text: start.task, done: false }];
+  state.commitment = `Cuối phiên tôi sẽ có: ${start.commitment}`;
+  state.lastDuration = 10;
+  state.session = null;
+  timer.duration = 10 * 60;
+  timer.remaining = timer.duration;
+  syncDurationControls(10);
+  addLog(`Quick win: ${start.task}`);
+  saveState();
+  render();
+  el.heroRescueOutput.textContent = start.step;
+  el.rescueOutput.textContent = start.step;
+  startSession(10);
+  state.session.lastRescueStep = start.step;
+  saveState();
+  syncFocusView();
+  toggleFocusMode(true);
 }
 
 function toggleTask(id) {
@@ -1508,11 +1572,7 @@ el.timerResetButton.addEventListener("click", resetTimer);
 el.focusModeButton.addEventListener("click", () => toggleFocusMode(true));
 el.closeFocusButton.addEventListener("click", () => toggleFocusMode(false));
 el.heroRescueButton.addEventListener("click", rescue);
-el.heroQuickWinButton.addEventListener("click", () => {
-  applyTemplate("quick-win", { scrollToTasks: false });
-  el.heroRescueOutput.textContent = "Viết 3 bullet đầu tiên.";
-  activateRunMode();
-});
+el.heroQuickWinButton.addEventListener("click", instantQuickWinStart);
 el.rescueButton.addEventListener("click", rescue);
 el.focusRescueButton.addEventListener("click", rescue);
 el.completeDoneButton.addEventListener("click", () => finishSession("Đã xong."));

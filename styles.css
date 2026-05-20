@@ -3064,8 +3064,8 @@ body.momentum-spark .hero-run-card .daily-loop strong {
 
   .quick-win-button {
     width: 100%;
-    min-height: 48px;
-    font-size: 1rem;
+    min-height: 54px;
+    font-size: 1.04rem;
   }
 
   .hero-fast-actions > span {
@@ -3077,11 +3077,20 @@ body.momentum-spark .hero-run-card .daily-loop strong {
   }
 
   .hero-duration {
-    margin: 10px 0;
+    display: none;
   }
 
   .hero-run-card .primary-button {
-    min-height: 54px;
+    min-height: 50px;
+    background: rgba(199, 255, 77, 0.16);
+    border-color: rgba(199, 255, 77, 0.28);
+    color: var(--ink);
+    box-shadow: none;
+  }
+
+  .hero-run-card .primary-button .button-icon {
+    color: var(--black);
+    background: var(--orange);
   }
 
   .checkin-band,
