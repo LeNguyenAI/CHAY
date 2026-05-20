@@ -205,18 +205,20 @@
         <img class="desk-art" src="assets/freelance-desk.svg" alt="Nhóm marketing chuyên nghiệp đang theo dõi chiến dịch trên bảng điều khiển">
 
         <section class="side-panel">
-          <p class="panel-label">Nhịp hôm nay</p>
+          <p class="panel-label">Momentum</p>
           <p class="feature-note" id="todayProgressText">Bắt đầu một sprint là ngày hôm nay đã có bằng chứng.</p>
-          <div class="score-row">
-            <div>
-              <strong id="focusScore">0%</strong>
-              <span>hoàn thành</span>
-            </div>
+          <div class="score-row momentum-score">
             <div>
               <strong id="streakDays">0</strong>
               <span>ngày giữ nhịp</span>
             </div>
+            <div>
+              <strong id="focusScore">0</strong>
+              <span>sprint hôm nay</span>
+            </div>
           </div>
+          <p class="streak-copy" id="streakCopy">Bắt đầu lại một nhịp mới.</p>
+          <ul class="momentum-output-list" id="momentumOutputs"></ul>
         </section>
 
         <section class="side-panel">
@@ -251,9 +253,9 @@
             <h2>Một phiên để có bản nháp đầu tiên.</h2>
             <p class="hero-copy">CHẠY biến trạng thái “để lát nữa” thành 3 bước nhỏ, một cam kết rõ, rồi mở RUN MODE để bạn bắt tay vào việc ngay.</p>
             <div class="hero-pills info-chips" aria-label="CHẠY phù hợp với ai">
-              <span>Gợi ý sẵn 3 việc nhỏ</span>
+              <span>M đang giữ nhịp.</span>
               <span>Một phiên, một đầu ra</span>
-              <span>Lưu nhịp để mai quay lại</span>
+              <span>Không cần hoàn hảo. Chỉ cần tiếp tục chạy.</span>
             </div>
           </div>
           <div class="hero-run-card">
@@ -481,9 +483,9 @@
           <article class="tool-panel log-panel reveal">
             <div class="section-heading">
               <div>
-                <p class="panel-label">Output hôm nay</p>
-                <h3>Bằng chứng là những thứ bạn đã tạo ra</h3>
-                <p class="feature-note">Mỗi phiên hoàn thành sẽ để lại một dòng output: bản nháp, outline, email, reel, proposal...</p>
+                <p class="panel-label">Lịch sử output</p>
+                <h3>Tuần này mình đã tạo ra gì?</h3>
+                <p class="feature-note">Các phiên được nhóm theo ngày để bạn thấy hành động đang tích lại, không phải một danh sách task.</p>
               </div>
             </div>
             <ul class="activity-log" id="activityLog"></ul>
@@ -535,6 +537,7 @@
           <strong id="completionSprintReward">+1 sprint hôm nay</strong>
           <strong id="completionStreakReward">Giữ nhịp hôm nay</strong>
         </div>
+        <p class="return-copy" id="completionReturnText">Momentum đang được xây.</p>
         <p id="completionCommitmentText">M đã tạo ra gì?</p>
         <div class="completion-actions">
           <button class="primary-button" id="completeDoneButton" type="button">

@@ -226,6 +226,8 @@ const el = {
   focusScore: document.querySelector("#focusScore"),
   streakDays: document.querySelector("#streakDays"),
   todayProgressText: document.querySelector("#todayProgressText"),
+  streakCopy: document.querySelector("#streakCopy"),
+  momentumOutputs: document.querySelector("#momentumOutputs"),
   heroProgress: document.querySelector("#heroProgress"),
   heroSprints: document.querySelector("#heroSprints"),
   heroRunStatus: document.querySelector("#heroRunStatus"),
@@ -281,6 +283,7 @@ const el = {
   completionCommitmentText: document.querySelector("#completionCommitmentText"),
   completionSprintReward: document.querySelector("#completionSprintReward"),
   completionStreakReward: document.querySelector("#completionStreakReward"),
+  completionReturnText: document.querySelector("#completionReturnText"),
   completeDoneButton: document.querySelector("#completeDoneButton"),
   completeProgressButton: document.querySelector("#completeProgressButton"),
   extendSessionButton: document.querySelector("#extendSessionButton"),
@@ -322,6 +325,13 @@ function loadState() {
   };
 
   if (merged.date !== TODAY) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const keptRhythm = merged.lastCompletedDate === getDateKey(yesterday);
+    const dayOpenText = keptRhythm
+      ? "Ngày mới đã mở. Bạn đang có nhịp, chỉ cần một phiên để nối tiếp."
+      : "Ngày mới đã mở. Bắt đầu lại một nhịp mới, nhẹ thôi cũng được.";
+
     return {
       ...merged,
       date: TODAY,
@@ -332,9 +342,9 @@ function loadState() {
       logs: [
         {
           at: new Date().toISOString(),
-          text: "Ngày mới đã mở. Chọn 3 việc đáng làm nhất rồi vào sprint đầu tiên."
+          text: dayOpenText
         },
-        ...(merged.logs || []).slice(0, 8)
+        ...(merged.logs || []).slice(0, 23)
       ]
     };
   }
@@ -552,8 +562,9 @@ function renderStats() {
   const total = Math.max(state.tasks.length, 3);
   const score = Math.round((completed / total) * 100);
   const metrics = todayMetrics();
-  el.focusScore.textContent = `${score}%`;
+  el.focusScore.textContent = String(metrics.sprints || 0);
   el.streakDays.textContent = String(state.streak || 0);
+  el.streakCopy.textContent = getStreakCopy(metrics);
   el.heroProgress.textContent = `${completed}/${total}`;
   el.heroSprints.textContent = String(metrics.sprints || 0);
   el.heroRunStatus.textContent = getHeroRunStatus(metrics);
@@ -561,6 +572,7 @@ function renderStats() {
     ? `Hôm nay đã có ${metrics.sprints} sprint. Mai chỉ cần quay lại và bật tiếp.`
     : "Bắt đầu một sprint là ngày hôm nay đã có bằng chứng.";
   el.heroCommitmentPreview.textContent = state.commitment || makeCommitment();
+  renderMomentumOutputs();
 }
 
 function getHeroRunStatus(metrics = todayMetrics()) {
@@ -568,6 +580,32 @@ function getHeroRunStatus(metrics = todayMetrics()) {
   if (state.session?.status === "paused") return "ĐANG TẠM DỪNG";
   if (state.session?.status === "completed") return "HOÀN THÀNH";
   return metrics.sprints ? "Đã có bằng chứng hôm nay" : "Sẵn sàng trong 1 click";
+}
+
+function getStreakCopy(metrics = todayMetrics()) {
+  if (metrics.sprints) return `+${metrics.sprints} sprint hôm nay. Mai tiếp tục giữ nhịp.`;
+  if (state.lastCompletedDate === TODAY) return "Hôm nay đã có bằng chứng. Không cần làm quá tay.";
+  if (state.streak > 1) return "Chuỗi đang còn đó. Một phiên ngắn là đủ để nối tiếp.";
+  return "Bắt đầu lại một nhịp mới.";
+}
+
+function renderMomentumOutputs() {
+  el.momentumOutputs.innerHTML = "";
+  const outputs = getRecentOutputs(3);
+
+  if (!outputs.length) {
+    const empty = document.createElement("li");
+    empty.className = "empty-state compact-empty";
+    empty.textContent = "Output gần đây sẽ hiện ở đây sau phiên đầu tiên.";
+    el.momentumOutputs.append(empty);
+    return;
+  }
+
+  outputs.forEach((output) => {
+    const item = document.createElement("li");
+    item.textContent = output.text;
+    el.momentumOutputs.append(item);
+  });
 }
 
 function renderWeeklyReview() {
@@ -589,20 +627,87 @@ function renderLog() {
     return;
   }
 
-  state.logs.slice(0, 7).forEach((log) => {
+  groupLogsByDay(state.logs.slice(0, 28)).forEach((group) => {
     const item = document.createElement("li");
-    if (log.type === "output") item.className = "output-log";
-    const time = document.createElement("time");
-    time.dateTime = log.at;
-    time.textContent = new Intl.DateTimeFormat("vi-VN", {
-      hour: "2-digit",
-      minute: "2-digit"
-    }).format(new Date(log.at));
-    const text = document.createElement("span");
-    text.textContent = log.text;
-    item.append(time, text);
+    item.className = "history-day";
+
+    const header = document.createElement("div");
+    header.className = "history-day-head";
+    header.innerHTML = `<strong>${group.label}</strong><span>${group.outputs} output</span>`;
+
+    const list = document.createElement("ul");
+    list.className = "history-items";
+
+    group.logs.slice(0, 5).forEach((log) => {
+      const row = document.createElement("li");
+      row.className = log.type === "output" ? "output-log" : "";
+
+      const time = document.createElement("time");
+      time.dateTime = log.at;
+      time.textContent = new Intl.DateTimeFormat("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date(log.at));
+
+      const text = document.createElement("span");
+      text.textContent = log.text;
+      row.append(time, text);
+      list.append(row);
+    });
+
+    item.append(header, list);
     el.activityLog.append(item);
   });
+}
+
+function getRecentOutputs(limit = 3) {
+  return state.logs
+    .filter((log) => log.type === "output")
+    .slice(0, limit)
+    .map((log) => ({
+      ...log,
+      text: log.text.replace(/^✓\s*/, "")
+    }));
+}
+
+function groupLogsByDay(logs) {
+  const groups = [];
+
+  logs.forEach((log) => {
+    const date = new Date(log.at);
+    const key = getDateKey(date);
+    let group = groups.find((item) => item.key === key);
+
+    if (!group) {
+      group = {
+        key,
+        label: formatHistoryDay(date),
+        logs: [],
+        outputs: 0
+      };
+      groups.push(group);
+    }
+
+    group.logs.push(log);
+    if (log.type === "output") group.outputs += 1;
+  });
+
+  return groups;
+}
+
+function formatHistoryDay(date) {
+  const key = getDateKey(date);
+  if (key === TODAY) return "Hôm nay";
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (key === getDateKey(yesterday)) return "Hôm qua";
+
+  return new Intl.DateTimeFormat("vi-VN", {
+    weekday: "short",
+    day: "2-digit",
+    month: "2-digit"
+  }).format(date);
 }
 
 function getWeeklySummary() {
@@ -641,12 +746,12 @@ function getWeeklySummary() {
 }
 
 function addLog(text) {
-  state.logs = [{ at: new Date().toISOString(), text }, ...state.logs].slice(0, 16);
+  state.logs = [{ at: new Date().toISOString(), text }, ...state.logs].slice(0, 40);
   saveState();
 }
 
 function addOutputLog(text) {
-  state.logs = [{ at: new Date().toISOString(), text, type: "output" }, ...state.logs].slice(0, 16);
+  state.logs = [{ at: new Date().toISOString(), text, type: "output" }, ...state.logs].slice(0, 40);
   saveState();
 }
 
@@ -1070,6 +1175,9 @@ function syncFocusView() {
   const nextStreak = state.lastCompletedDate === TODAY ? state.streak : Math.max(1, state.streak + 1);
   el.completionSprintReward.textContent = `+1 sprint hôm nay (${nextSprintCount})`;
   el.completionStreakReward.textContent = nextStreak > 1 ? `${nextStreak} ngày liên tiếp` : "Giữ nhịp hôm nay";
+  el.completionReturnText.textContent = nextSprintCount > 1
+    ? "Momentum đang được xây. Mai chỉ cần nối tiếp."
+    : "Một phiên nữa là đủ để tiến lên. Mai quay lại giữ nhịp.";
   el.completionCommitmentText.textContent = `M đã tạo ra gì từ mục tiêu: ${commitment}?`;
   const completed = isSessionCompleted();
   el.focusSessionView.hidden = completed;
