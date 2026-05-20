@@ -25,18 +25,18 @@ const goalLabels = {
 };
 
 const defaultQuotes = [
-  "Mở việc ra trước. Cảm giác rõ hơn sẽ đến sau.",
-  "Bản đầu tiên được phép xấu. Nó chỉ cần tồn tại.",
-  "Hôm nay chỉ cần một đầu ra nhỏ cũng đủ có đà.",
-  "Nếu đang né việc, hãy làm nó nhỏ lại: mở file, viết một dòng, gửi một tin nhắn.",
-  "Không cần nghĩ hết đường. Chỉ cần bước đầu tiên.",
-  "Không cần hoàn hảo. Chỉ cần bật lên và CHẠY."
+  "Mở việc ra trước.",
+  "Bản đầu tiên chỉ cần tồn tại.",
+  "Một đầu ra nhỏ là đủ.",
+  "Làm nhỏ lại: mở file, viết một dòng.",
+  "Chỉ cần bước đầu tiên.",
+  "Bật lên và CHẠY."
 ];
 
 const nudges = {
-  low: "Nhẹ thôi: mở file, viết 1 dòng, chạy 10 phút.",
-  steady: "Chọn một đầu ra nhỏ. Bật RUN MODE.",
-  sharp: "Lấy phần khách sẽ thấy. Làm bản đầu trước."
+  low: "Mở file. Viết 1 dòng.",
+  steady: "Chọn đầu ra nhỏ.",
+  sharp: "Làm bản đầu trước."
 };
 
 const energyTaskPrefix = {
@@ -86,56 +86,56 @@ const defaultTemplates = [
     id: "quick-win",
     icon: "⚡",
     title: "Quick win",
-    note: "Một việc nhỏ để có đà ngay.",
+    note: "Một việc nhỏ.",
     tasks: ["Gửi 1 follow-up", "Viết 3 bullet", "Mở file dang dở"]
   },
   {
     id: "content",
     icon: "✍",
     title: "Content sprint",
-    note: "Tạo nội dung có thể đăng hoặc gửi khách.",
+    note: "Tạo bản nháp.",
     tasks: ["Research insight và angle chính", "Viết 5 hook hoặc outline", "Soạn bản nháp đầu tiên"]
   },
   {
     id: "ads",
     icon: "📈",
     title: "Ads optimize",
-    note: "Rà KPI và tạo hành động tối ưu.",
+    note: "Chọn một test.",
     tasks: ["Kiểm tra CPA, CTR, ROAS", "Chọn 1 giả thuyết test", "Viết 2 biến thể creative/copy"]
   },
   {
     id: "seo",
     icon: "🔎",
     title: "SEO brief",
-    note: "Biến keyword thành outline rõ ràng.",
+    note: "Lên outline.",
     tasks: ["Chọn keyword và intent", "Lập outline H2/H3", "Thêm internal link và CTA"]
   },
   {
     id: "client",
     icon: "💼",
     title: "Client delivery",
-    note: "Dọn việc khách cần thấy hôm nay.",
+    note: "Dọn việc khách thấy.",
     tasks: ["Chốt đầu ra cần bàn giao", "Hoàn thiện file/report chính", "Gửi update ngắn cho khách"]
   },
   {
     id: "growth",
     icon: "🚀",
     title: "Get clients",
-    note: "Tạo pipeline để không phụ thuộc một khách.",
+    note: "Gửi follow-up.",
     tasks: ["Cập nhật 1 case study", "Gửi 3 follow-up chất lượng", "Đăng 1 insight thể hiện chuyên môn"]
   },
   {
     id: "strategy",
     icon: "◆",
     title: "Strategy deck",
-    note: "Biến suy nghĩ rời rạc thành hướng đi rõ.",
+    note: "Chốt hướng đi.",
     tasks: ["Chốt insight và vấn đề chính", "Phác 3 hướng chiến lược", "Viết next step cho khách"]
   },
   {
     id: "email",
     icon: "✉",
     title: "Email / CRM",
-    note: "Tạo luồng chăm sóc hoặc bán hàng gọn.",
+    note: "Soạn email.",
     tasks: ["Chọn segment và mục tiêu email", "Viết subject + preview", "Soạn bản nháp email đầu tiên"]
   }
 ];
@@ -213,11 +213,11 @@ const continuationPrompts = [
   },
   {
     title: "Chỉ cần thêm 5 phút nữa thôi.",
-    copy: "Không cần làm nhiều. Mở lại đúng điểm đang dở."
+    copy: "Mở lại điểm đang dở."
   },
   {
     title: "Nhịp vẫn còn ở đây.",
-    copy: "Lấy lại một bước nhỏ, rồi để timer dẫn phần còn lại."
+    copy: "Lấy lại một bước nhỏ."
   }
 ];
 
@@ -397,8 +397,8 @@ function loadState() {
     yesterday.setDate(yesterday.getDate() - 1);
     const keptRhythm = merged.lastCompletedDate === getDateKey(yesterday);
     const dayOpenText = keptRhythm
-      ? "Ngày mới đã mở. Bạn đang có nhịp, chỉ cần một phiên để nối tiếp."
-      : "Ngày mới đã mở. Bắt đầu lại một nhịp mới, nhẹ thôi cũng được.";
+      ? "Ngày mới. Nối tiếp một phiên."
+      : "Ngày mới. Bắt đầu nhẹ.";
 
     return {
       ...merged,
@@ -571,22 +571,22 @@ function renderTemplateFeedback() {
   if (!template) {
     if (state.tasks.length) {
       el.templateFeedback.innerHTML = `
-        <strong>Đã có gợi ý theo hồ sơ của bạn.</strong>
-        <span>3 bước nhỏ bên dưới được tạo từ kiểu việc ${roleLabels[roleForSuggestions()]} và mức năng lượng hiện tại.</span>
+        <strong>Đã có 3 bước nhỏ.</strong>
+        <span>Theo ${roleLabels[roleForSuggestions()]} và năng lượng hiện tại.</span>
       `;
       return;
     }
 
     el.templateFeedback.innerHTML = `
       <strong>Chưa chọn mẫu nào.</strong>
-      <span>Bấm Bật mode CHẠY để app tự tạo 3 bước nhỏ và cam kết đầu ra cho bạn.</span>
+      <span>Bấm CHẠY để có bước nhỏ.</span>
     `;
     return;
   }
 
   el.templateFeedback.innerHTML = `
     <strong>Đã tạo checklist từ ${template.title}.</strong>
-    <span>3 bước nhỏ bên dưới đã được thay bằng đường vào việc này.</span>
+    <span>Đường vào việc đã sẵn sàng.</span>
     <button class="ghost-button jump-to-tasks-button" type="button">
       <span class="button-icon" aria-hidden="true">↓</span>
       Xem checklist
@@ -603,7 +603,7 @@ function renderTasks() {
   if (!state.tasks.length) {
     const empty = document.createElement("li");
     empty.className = "empty-state";
-    empty.textContent = "Thêm tối đa 3 bước nhỏ hoặc bấm Quick win để bắt đầu nhẹ hơn.";
+    empty.textContent = "Thêm bước nhỏ hoặc bấm Quick win.";
     el.taskList.append(empty);
     return;
   }
@@ -648,7 +648,7 @@ function renderStats() {
   el.heroRunStatus.textContent = getHeroRunStatus(metrics);
   el.todayProgressText.textContent = metrics.sprints
     ? `+${metrics.sprints} sprint hôm nay.`
-    : "Một phiên là đủ để bắt đầu.";
+    : "Một phiên là đủ.";
   el.heroCommitmentPreview.textContent = state.commitment || makeCommitment();
   if (!el.heroRescueOutput.textContent.trim()) {
     el.heroRescueOutput.textContent = "Mở file cần làm.";
@@ -733,7 +733,7 @@ function renderMomentumOutputs() {
   if (!outputs.length) {
     const empty = document.createElement("li");
     empty.className = "empty-state compact-empty";
-    empty.textContent = "Output sẽ hiện sau phiên đầu.";
+    empty.textContent = "Output hiện sau phiên đầu.";
     el.momentumOutputs.append(empty);
     return;
   }
@@ -869,10 +869,10 @@ function getWeeklySummary() {
     : state.energy;
   const todaySprint = state.metrics[TODAY]?.sprints || 0;
   const insight = sprints === 0
-    ? "Tuần này chưa có phiên tập trung nào. Bắt đầu bằng 15 phút là đủ để tạo dữ liệu đầu tiên."
+    ? "Tuần này chưa có sprint. Bắt đầu 15 phút."
     : todaySprint
-      ? `Hôm nay đã có ${todaySprint} sprint. Đóng phiên gọn, mai quay lại bật CHẠY tiếp.`
-      : `Bạn đã có ${sprints} sprint trong 7 ngày gần nhất. Hôm nay chỉ cần thêm một phiên ngắn để giữ nhịp.`;
+      ? `Hôm nay ${todaySprint} sprint. Đủ có đà.`
+      : `${sprints} sprint trong 7 ngày. Thêm một phiên ngắn?`;
 
   return {
     sprints,
@@ -899,7 +899,7 @@ function makeId() {
 
 function addTask(text, shouldRender = true) {
   if (state.tasks.length >= 3) {
-    addLog("Bạn đã có 3 bước nhỏ. Hãy làm hoặc xóa bớt trước khi thêm.");
+    addLog("Đã đủ 3 bước nhỏ.");
     if (shouldRender) render();
     return;
   }
@@ -924,7 +924,7 @@ function applyTemplate(templateId, options = {}) {
   state.selectedTemplate = template.id;
   state.tasks = template.tasks.map((task) => ({ id: makeId(), text: task, done: false }));
   state.commitment = `Cuối phiên tôi sẽ có: ${template.note.toLowerCase()}`;
-  addLog(`Đã áp dụng template: ${template.title}.`);
+  addLog(`Mẫu: ${template.title}.`);
   saveAndRender();
   if (!scrollToTasks) return;
   window.setTimeout(() => {
@@ -942,6 +942,8 @@ function pickQuickWinStart() {
 
 function instantQuickWinStart() {
   const start = pickQuickWinStart();
+  document.body.classList.add("quick-win-activated");
+  window.setTimeout(() => document.body.classList.remove("quick-win-activated"), 700);
   clearSessionTicker();
   state.profile.onboarded = true;
   state.selectedTemplate = "quick-win";
@@ -994,7 +996,7 @@ function updateStreakIfNeeded() {
   const yesterdayKey = getDateKey(yesterday);
   state.streak = state.lastCompletedDate === yesterdayKey ? state.streak + 1 : 1;
   state.lastCompletedDate = TODAY;
-  addLog("Bạn đã hoàn thành 3 bước nhỏ hôm nay. Ngày này có bằng chứng rồi.");
+  addLog("3 bước xong. Hôm nay có bằng chứng.");
 }
 
 function setEnergy(energy) {
@@ -1010,7 +1012,7 @@ function saveCommandCenter() {
     asset: el.assetInput.value.trim(),
     selfcare: el.selfcareInput.value.trim()
   };
-  addLog("Đã lưu bảng thắng hôm nay.");
+  addLog("Đã lưu hôm nay.");
   saveAndRender();
 }
 
@@ -1032,7 +1034,7 @@ function skipOnboarding() {
     onboarded: true
   };
   applySmartPlan({ overwrite: true, log: false });
-  addLog("Đã dùng thiết lập mặc định. Có 3 bước nhỏ sẵn để bắt đầu.");
+  addLog("Đã có 3 bước nhỏ.");
   saveAndRender();
 }
 
@@ -1241,7 +1243,7 @@ function finishSession(resultText) {
   const durationMinutes = Math.round((state.session.duration || timer.duration) / 60);
   todayMetrics().sprints += 1;
   const output = cleanCommitmentText(state.session.commitment || state.commitment);
-  addLog(`${resultText} Sprint ${durationMinutes} phút đã được ghi nhận. Mai quay lại bật CHẠY tiếp.`);
+  addLog(`${resultText} Sprint ${durationMinutes} phút.`);
   addOutputLog(`✓ ${output}`);
   state.session = null;
   timer.running = false;
@@ -1359,9 +1361,9 @@ function syncFocusView() {
   el.completionSprintReward.textContent = `+1 sprint hôm nay (${nextSprintCount})`;
   el.completionStreakReward.textContent = nextStreak > 1 ? `${nextStreak} ngày liên tiếp` : "Giữ nhịp hôm nay";
   el.completionReturnText.textContent = nextSprintCount > 1
-    ? "Momentum đang được xây. Mai chỉ cần nối tiếp."
-    : "Một phiên nữa là đủ để tiến lên. Mai quay lại giữ nhịp.";
-  el.completionCommitmentText.textContent = `M đã tạo ra gì từ mục tiêu: ${commitment}?`;
+    ? "Nhịp đang lên."
+    : "Một phiên là có đà.";
+  el.completionCommitmentText.textContent = `Đầu ra: ${commitment}?`;
   const completed = isSessionCompleted();
   el.focusSessionView.hidden = completed;
   el.completionView.hidden = !completed;
@@ -1459,7 +1461,7 @@ function saveSettings() {
     selfcare: el.selfcareLabelInput.value.trim() || defaultState.commandLabels.selfcare
   };
 
-  addLog("Đã lưu cài đặt cá nhân.");
+  addLog("Đã lưu cài đặt.");
   toggleSettings(false);
   saveAndRender();
 }
@@ -1479,7 +1481,7 @@ function resetToday() {
     energy: state.energy,
     commitments: 0
   };
-  addLog("Đã reset dữ liệu hôm nay.");
+  addLog("Đã reset hôm nay.");
   toggleSettings(false);
   saveAndRender();
 }
@@ -1514,7 +1516,7 @@ function activateRunMode() {
   }
 
   applyHeroDuration();
-  addLog("Đã bật RUN MODE: mở màn hình tập trung, chuẩn bị checklist và bắt đầu phiên chạy việc.");
+  addLog("Đã bật RUN MODE.");
   saveState();
   render();
 

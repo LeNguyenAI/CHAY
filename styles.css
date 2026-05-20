@@ -1446,7 +1446,7 @@ body.session-completing .focus-overlay {
   }
 }
 
-/* CHẠY premium productivity environment */
+/* CHẠY execution ritual */
 :root {
   --ink: #f5f7fa;
   --muted: #9da3ae;
@@ -2295,7 +2295,7 @@ select:focus-visible {
   border-color: var(--orange);
 }
 
-/* Calm dashboard pass: fewer competing surfaces, stronger first action. */
+/* Calm surface pass: fewer competing surfaces, stronger first action. */
 .app-shell {
   grid-template-columns: minmax(240px, 292px) 1fr;
 }
@@ -3338,5 +3338,213 @@ body.momentum-spark .hero-run-card .daily-loop strong {
   .nudge-box {
     align-self: end;
     min-height: 42px;
+  }
+}
+
+/* Lighter ritual pass: less boxed UI, calmer motion, shorter reading path. */
+body {
+  background:
+    radial-gradient(circle at 82% 4%, rgba(199, 255, 77, 0.105), transparent 30%),
+    linear-gradient(90deg, rgba(199, 255, 77, 0.024) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(199, 255, 77, 0.02) 1px, transparent 1px),
+    #0d0f12;
+}
+
+.hero-section::before {
+  opacity: 0.48;
+}
+
+.hero-copy,
+.feature-note,
+.template-card span:last-child,
+.review-insight,
+.activity-log li,
+.momentum-return span {
+  line-height: 1.38;
+}
+
+.side-panel,
+.tool-panel,
+.checkin-band {
+  border-color: rgba(42, 48, 56, 0.58);
+  background: rgba(21, 24, 29, 0.62);
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.26);
+}
+
+.command-center,
+.templates-panel,
+.priority-panel,
+.brief-panel,
+.review-panel,
+.log-panel,
+.contact-section .tool-panel {
+  background: rgba(21, 24, 29, 0.5);
+}
+
+.tool-panel:hover,
+.checkin-band:hover,
+.side-panel:hover {
+  border-color: rgba(199, 255, 77, 0.22);
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.32);
+}
+
+.hero-run-card {
+  background: linear-gradient(180deg, rgba(24, 28, 31, 0.94), rgba(11, 14, 13, 0.94));
+  box-shadow: 0 28px 82px rgba(0, 0, 0, 0.48), 0 0 28px rgba(199, 255, 77, 0.1);
+}
+
+.hero-run-card.session-active {
+  animation: run-card-breathe 3.8s ease-in-out infinite;
+}
+
+.hero-run-time,
+.focus-time,
+.timer-face strong {
+  transition: transform 0.26s var(--ease-out), color 0.26s var(--ease-soft), text-shadow 0.3s var(--ease-soft);
+}
+
+.quick-win-button {
+  transition:
+    transform 0.2s var(--ease-out),
+    border-color 0.24s var(--ease-soft),
+    background 0.24s var(--ease-soft),
+    box-shadow 0.24s var(--ease-soft);
+}
+
+body.quick-win-activated .quick-win-button {
+  animation: quick-win-tap 0.62s var(--ease-out) both;
+}
+
+body.quick-win-activated .hero-run-card {
+  animation: quick-win-card 0.7s var(--ease-out) both;
+}
+
+.ring-progress {
+  transition: stroke-dashoffset 0.45s var(--ease-soft), filter 0.45s var(--ease-soft);
+}
+
+.template-card,
+.task-item,
+.review-grid div,
+.daily-loop div,
+.history-day {
+  border-color: rgba(42, 48, 56, 0.62);
+  background: rgba(16, 20, 18, 0.58);
+  box-shadow: none;
+}
+
+.template-feedback,
+.momentum-return,
+.nudge-box,
+.rescue-output:not(:empty) {
+  border-color: rgba(199, 255, 77, 0.18);
+  background: rgba(199, 255, 77, 0.045);
+}
+
+.completion-stats strong {
+  box-shadow: 0 0 18px rgba(199, 255, 77, 0.16);
+}
+
+.completion-stats strong::after {
+  opacity: 0.68;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .primary-button:hover,
+  .quick-win-button:hover,
+  .rescue-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 28px rgba(199, 255, 77, 0.2);
+  }
+
+  .template-card:hover,
+  .task-item:hover,
+  .history-day:hover,
+  .review-grid div:hover,
+  .daily-loop div:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (max-width: 620px) {
+  .side-panel,
+  .tool-panel,
+  .checkin-band {
+    border-color: rgba(42, 48, 56, 0.42);
+    background: rgba(21, 24, 29, 0.42);
+  }
+
+  .command-center,
+  .templates-panel,
+  .priority-panel,
+  .brief-panel,
+  .review-panel,
+  .log-panel,
+  .contact-section .tool-panel {
+    margin-bottom: 14px;
+  }
+
+  .template-card,
+  .task-item,
+  .review-grid div,
+  .history-day {
+    background: rgba(16, 20, 18, 0.46);
+  }
+
+  .hero-pills,
+  .run-mode-prompts,
+  .contact-section {
+    display: none;
+  }
+
+  .run-mode-showcase {
+    padding: 14px;
+    gap: 14px;
+  }
+}
+
+@keyframes quick-win-tap {
+  0% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(0.972);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes quick-win-card {
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 28px 82px rgba(0, 0, 0, 0.48), 0 0 28px rgba(199, 255, 77, 0.1);
+  }
+  48% {
+    transform: translateY(-2px);
+    box-shadow: 0 30px 88px rgba(0, 0, 0, 0.5), 0 0 40px rgba(199, 255, 77, 0.18);
+  }
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 28px 82px rgba(0, 0, 0, 0.48), 0 0 28px rgba(199, 255, 77, 0.1);
+  }
+}
+
+@keyframes run-card-breathe {
+  0%,
+  100% {
+    box-shadow: 0 28px 82px rgba(0, 0, 0, 0.48), 0 0 24px rgba(199, 255, 77, 0.1);
+  }
+  50% {
+    box-shadow: 0 28px 82px rgba(0, 0, 0, 0.48), 0 0 34px rgba(199, 255, 77, 0.16);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-run-card.session-active,
+  body.quick-win-activated .quick-win-button,
+  body.quick-win-activated .hero-run-card {
+    animation: none !important;
   }
 }

@@ -16,14 +16,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=momentum-2">
+    <link rel="stylesheet" href="styles.css?v=light-1">
   </head>
   <body>
     <div class="onboarding-modal" id="onboardingModal" aria-hidden="true">
       <section class="onboarding-card" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
         <p class="eyebrow">Thiết lập nhanh</p>
         <h2 id="onboardingTitle">Chọn gần đúng. Bắt đầu nhẹ hơn.</h2>
-        <p class="hero-copy">Giữ mặc định cũng được. CHẠY sẽ đưa ra vài bước rất nhỏ để bạn vào RUN MODE mà không cần nghĩ lâu.</p>
+        <p class="hero-copy">Giữ mặc định cũng được. CHẠY sẽ đưa ra bước nhỏ để vào RUN MODE.</p>
 
         <div class="setup-grid">
           <label>
@@ -72,7 +72,7 @@
           <div>
             <p class="eyebrow">Cài đặt</p>
             <h2 id="settingsTitle">Chỉnh CHẠY theo gu làm việc</h2>
-            <p class="hero-copy">Sửa câu nhắc, template và nhãn bảng hôm nay để app nói đúng ngôn ngữ của bạn.</p>
+            <p class="hero-copy">Sửa câu nhắc, mẫu và nhãn hôm nay.</p>
           </div>
           <button class="icon-button" id="closeSettingsButton" type="button" aria-label="Đóng cài đặt">×</button>
         </div>
@@ -80,13 +80,13 @@
         <div class="settings-grid">
           <section class="settings-section">
             <h3>Câu nhắc của tôi</h3>
-            <p class="feature-note">Mỗi dòng là một câu. Nên viết ngắn, rõ, đúng kiểu bạn muốn tự nhắc mình.</p>
+            <p class="feature-note">Mỗi dòng một câu ngắn.</p>
             <textarea id="quoteSettingsInput" rows="7"></textarea>
           </section>
 
           <section class="settings-section">
             <h3>Template của tôi</h3>
-            <p class="feature-note">Chọn một template rồi sửa tên, mô tả và 3 bước việc. App sẽ dùng bản này cho lần sau.</p>
+            <p class="feature-note">Sửa tên, mô tả và 3 bước.</p>
             <label>
               Chọn template
               <select id="templateSettingsSelect"></select>
@@ -115,7 +115,7 @@
 
           <section class="settings-section">
             <h3>Nhãn bảng hôm nay</h3>
-            <p class="feature-note">Đổi tên 4 ô nếu cách chia hiện tại chưa hợp workflow của bạn.</p>
+            <p class="feature-note">Đổi tên 4 ô hôm nay.</p>
             <label>
               Ô 1
               <input id="moneyLabelInput" type="text" maxlength="28">
@@ -157,40 +157,40 @@
         <div class="settings-head">
           <div>
             <p class="eyebrow">Hướng dẫn sử dụng</p>
-            <h2 id="guideTitle">Cách bắt đầu khi đang kẹt</h2>
-            <p class="hero-copy">Dành cho lúc bạn chỉ cần một hành động đầu tiên đủ nhỏ để vào việc.</p>
+            <h2 id="guideTitle">Khi đang kẹt</h2>
+            <p class="hero-copy">Lấy một bước nhỏ rồi vào việc.</p>
           </div>
           <button class="icon-button" id="closeGuideButton" type="button" aria-label="Đóng hướng dẫn">×</button>
         </div>
 
         <div class="guide-grid full-guide">
           <div>
-            <strong>1. Setup nhanh hoặc bỏ qua</strong>
-            <span>Giữ mặc định cũng được. CHẠY sẽ tự tạo 3 bước nhỏ, đủ để bắt đầu.</span>
+            <strong>1. Setup nhanh</strong>
+            <span>Giữ mặc định cũng được.</span>
           </div>
           <div>
-            <strong>2. Chọn trạng thái năng lượng</strong>
-            <span>Chọn Uể oải, Ổn định hoặc Sẵn sàng để bước nhỏ hợp với sức hiện tại.</span>
+            <strong>2. Chọn năng lượng</strong>
+            <span>Để bước nhỏ vừa sức.</span>
           </div>
           <div>
             <strong>3. Bật RUN MODE</strong>
-            <span>Một nút sẽ tạo checklist nếu cần, chạy timer và mở màn hình tập trung.</span>
+            <span>Một nút. Một phiên.</span>
           </div>
           <div>
-            <strong>4. Kẹt thì bấm gợi ý bước nhỏ</strong>
-            <span>Nút này đưa ra một hành động nhỏ, cụ thể, làm được ngay.</span>
+            <strong>4. Kẹt thì lấy bước nhỏ</strong>
+            <span>Mở file, viết một dòng.</span>
           </div>
           <div>
             <strong>5. Tick việc đã xong</strong>
-            <span>Mỗi việc hoàn thành sẽ cộng vào tiến độ hôm nay và review tuần.</span>
+            <span>Ghi lại bằng chứng.</span>
           </div>
           <div>
-            <strong>6. Quay lại ngày mai</strong>
-            <span>Sau một sprint, app giữ lịch sử để bạn thấy mình đã có nhịp, không phải bắt đầu lại từ số không.</span>
+            <strong>6. Quay lại sau</strong>
+            <span>Nhịp vẫn còn đó.</span>
           </div>
           <div>
-            <strong>7. Cài đặt theo gu của bạn</strong>
-            <span>Trong Cài đặt, bạn có thể sửa câu nhắc, template và nhãn bảng hôm nay.</span>
+            <strong>7. Chỉnh theo gu</strong>
+            <span>Sửa câu nhắc và mẫu.</span>
           </div>
         </div>
       </section>
@@ -211,7 +211,7 @@
 
         <section class="side-panel">
           <p class="panel-label">Momentum</p>
-          <p class="feature-note" id="todayProgressText">Bắt đầu một sprint là ngày hôm nay đã có bằng chứng.</p>
+          <p class="feature-note" id="todayProgressText">Một sprint là có bằng chứng.</p>
           <div class="score-row momentum-score">
             <div>
               <strong id="streakDays">0</strong>
@@ -249,9 +249,9 @@
           <div class="hero-copy-block">
             <p class="eyebrow" id="todayLabel"></p>
             <h2>Bắt đầu nhẹ. Có đà ngay.</h2>
-            <p class="hero-copy">Khi đầu đang rối, chỉ cần một bước nhỏ để vào phiên.</p>
+            <p class="hero-copy">Một bước nhỏ là đủ.</p>
             <div class="hero-pills info-chips" aria-label="CHẠY phù hợp với ai">
-              <span>Không cần làm hay ngay.</span>
+              <span>Bản nháp trước.</span>
               <span>Mở việc ra trước.</span>
             </div>
           </div>
@@ -271,7 +271,7 @@
                 <span class="button-icon" aria-hidden="true">⚡</span>
                 Quick win ngay
               </button>
-              <span>1 việc nhỏ, vào phiên ngay.</span>
+              <span>Có đà ngay.</span>
             </div>
             <div class="momentum-return" id="momentumReturnCard" hidden aria-live="polite">
               <div>
@@ -311,7 +311,7 @@
               <span class="button-icon" aria-hidden="true">⚡</span>
               Bật mode CHẠY
             </button>
-            <p class="button-help">Không cần chuẩn bị thêm.</p>
+            <p class="button-help">Vào việc ngay.</p>
           </div>
         </header>
 
@@ -338,11 +338,11 @@
         <section class="run-mode-showcase tool-panel reveal" id="focusPanel">
           <div class="run-mode-copy">
             <p class="panel-label">RUN MODE</p>
-            <h3>Một bước là đủ để vào việc</h3>
-            <p class="feature-note">Kẹt thì lấy một bước nhỏ, làm phần dễ nhất trước.</p>
+            <h3>Một bước là đủ</h3>
+            <p class="feature-note">Làm phần dễ nhất trước.</p>
             <div class="run-mode-prompts info-chips" aria-label="Nguyên tắc của RUN MODE">
               <span>Làm bản nháp trước.</span>
-              <span>Chỉ cần có cái để sửa.</span>
+              <span>Có cái để sửa.</span>
             </div>
           </div>
 
@@ -395,7 +395,7 @@
           <div class="section-heading">
             <div>
                 <p class="panel-label">Nếu cần</p>
-                <h3>Ghi một điều đang vướng</h3>
+                <h3>Điều đang vướng</h3>
             </div>
             <button class="ghost-button" id="saveCommandButton" type="button">
               Lưu ngày
@@ -426,13 +426,13 @@
             <div class="section-heading">
               <div>
                 <p class="panel-label">Mẫu nhẹ</p>
-                <h3>Chọn đường vào việc</h3>
+                <h3>Đường vào việc</h3>
               </div>
             </div>
             <div class="template-grid" id="templateGrid"></div>
             <div class="template-feedback" id="templateFeedback" aria-live="polite">
               <strong>Chưa chọn mẫu nào.</strong>
-              <span>Bấm một mẫu để CHẠY tạo 3 bước nhỏ và cam kết đầu ra cho bạn.</span>
+              <span>Chọn mẫu để có 3 bước nhỏ.</span>
             </div>
           </article>
 
@@ -440,7 +440,7 @@
             <div class="section-heading">
               <div>
                 <p class="panel-label">Bước nhỏ</p>
-                <h3>Chỉ giữ việc kéo bạn vào phiên</h3>
+                <h3>Bước kéo vào phiên</h3>
               </div>
               <button class="icon-button" id="clearDoneButton" type="button" aria-label="Ẩn việc đã xong" title="Ẩn việc đã xong">🧹</button>
             </div>
@@ -464,7 +464,7 @@
               </div>
             </div>
             <label for="commitmentInput">Cuối phiên này tôi sẽ có:</label>
-            <textarea id="commitmentInput" rows="5" maxlength="240" placeholder="Ví dụ: 5 hook quảng cáo, 1 lịch đăng bài, hoặc bản nháp email gửi khách..."></textarea>
+            <textarea id="commitmentInput" rows="5" maxlength="240" placeholder="Ví dụ: 5 hook, 1 outline, bản nháp email..."></textarea>
             <button class="ghost-button" id="saveCommitmentButton" type="button">
               <span class="button-icon" aria-hidden="true">✦</span>
               Lưu cam kết
@@ -475,13 +475,13 @@
             <div class="section-heading">
               <div>
                 <p class="panel-label">Review tuần</p>
-                <h3>Nhịp đang tích lại</h3>
+                <h3>Nhịp đang lên</h3>
               </div>
             </div>
             <div class="review-grid">
               <div><strong id="weekSprints">0</strong><span>sprint</span></div>
               <div><strong id="weekTasks">0</strong><span>việc xong</span></div>
-              <div><strong id="weekEnergy">Ổn định</strong><span>năng lượng hay gặp</span></div>
+              <div><strong id="weekEnergy">Ổn định</strong><span>năng lượng</span></div>
             </div>
             <p class="review-insight" id="weekInsight"></p>
           </article>
@@ -490,7 +490,7 @@
             <div class="section-heading">
               <div>
                 <p class="panel-label">Lịch sử output</p>
-                <h3>Tuần này mình đã tạo ra gì?</h3>
+            <h3>Đã tạo ra gì?</h3>
               </div>
             </div>
             <ul class="activity-log" id="activityLog"></ul>
@@ -500,8 +500,8 @@
         <section class="contact-section reveal">
           <article class="tool-panel" id="contactPanel">
             <p class="panel-label">Liên hệ</p>
-            <h3>Góp ý để CHẠY tốt hơn</h3>
-            <p class="feature-note">Nếu bạn muốn thêm workflow cho content, ads, SEO, creator hoặc freelancer, gửi feedback tại Facebook bên dưới.</p>
+            <h3>Góp ý cho CHẠY</h3>
+            <p class="feature-note">Gửi feedback tại Facebook bên dưới.</p>
             <a class="contact-link" href="https://www.facebook.com/www.lethainguyen.net" target="_blank" rel="noreferrer">facebook.com/www.lethainguyen.net</a>
           </article>
         </section>
@@ -520,7 +520,7 @@
       <button class="icon-button focus-close" id="closeFocusButton" type="button" aria-label="Đóng focus mode">×</button>
       <div class="focus-session-view" id="focusSessionView">
         <p class="eyebrow">RUN MODE</p>
-        <h2>Bắt đầu bằng bước nhỏ.</h2>
+        <h2>Bắt đầu nhỏ.</h2>
         <div class="focus-time" id="focusTimerDisplay">25:00</div>
         <p id="focusCommitmentText">Cuối phiên tôi sẽ có: một bản nháp đủ để sửa tiếp.</p>
         <div class="timer-actions">
@@ -547,12 +547,12 @@
       <div class="completion-view" id="completionView" hidden>
         <p class="eyebrow">RUN MODE</p>
         <h2>Phiên hoàn thành.</h2>
-        <p class="completion-reward">M đã giữ nhịp.</p>
+        <p class="completion-reward">M đã có đà.</p>
         <div class="completion-stats" aria-label="Kết quả phiên vừa xong">
           <strong id="completionSprintReward">+1 sprint hôm nay</strong>
           <strong id="completionStreakReward">Giữ nhịp hôm nay</strong>
         </div>
-        <p class="return-copy" id="completionReturnText">Momentum đang được xây.</p>
+        <p class="return-copy" id="completionReturnText">Nhịp đang lên.</p>
         <p id="completionCommitmentText">M đã tạo ra gì?</p>
         <div class="completion-actions">
           <button class="primary-button" id="completeDoneButton" type="button">
@@ -565,6 +565,6 @@
       </div>
     </section>
 
-    <script src="app.js?v=momentum-2"></script>
+    <script src="app.js?v=light-1"></script>
   </body>
 </html>
