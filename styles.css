@@ -2303,6 +2303,19 @@ select:focus-visible {
   padding: 26px;
   border-color: rgba(199, 255, 77, 0.48);
   box-shadow: 0 32px 90px rgba(0, 0, 0, 0.52), 0 0 48px rgba(199, 255, 77, 0.16);
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(199, 255, 77, 0.38) transparent;
+}
+
+.hero-run-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.hero-run-card::-webkit-scrollbar-thumb {
+  background: rgba(199, 255, 77, 0.32);
+  border-radius: 999px;
 }
 
 .hero-run-time {
@@ -3151,5 +3164,86 @@ body.momentum-spark .hero-run-card .daily-loop strong {
 
   .sidebar {
     padding-top: 14px;
+  }
+}
+
+@media (min-width: 981px) and (max-height: 980px) {
+  .workspace {
+    padding-block: 16px;
+  }
+
+  .hero-section {
+    min-height: calc(100vh - 32px);
+    padding: 12px 0;
+  }
+
+  .hero-run-card {
+    align-self: center;
+    max-height: calc(100vh - 104px);
+    padding: 20px;
+  }
+
+  .hero-run-head {
+    margin-bottom: 12px;
+  }
+
+  .hero-run-time {
+    margin-bottom: 10px;
+    font-size: clamp(3.5rem, 5vw, 4.7rem);
+  }
+
+  .hero-run-card p {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    line-height: 1.36;
+  }
+
+  .starter-chip,
+  .hero-fast-actions {
+    margin-bottom: 10px;
+  }
+
+  .daily-loop {
+    margin: 10px 0;
+  }
+
+  .daily-loop div {
+    min-height: 54px;
+    padding: 10px;
+  }
+
+  .hero-duration {
+    margin: 10px 0;
+  }
+
+  .hero-run-card .primary-button {
+    min-height: 50px;
+  }
+
+  .hero-run-card .button-help {
+    display: none;
+  }
+}
+
+@media (min-width: 981px) and (max-height: 820px) {
+  .hero-section h2 {
+    font-size: clamp(3rem, 5.7vw, 5rem);
+  }
+
+  .hero-run-card {
+    padding: 18px;
+  }
+
+  .hero-run-time {
+    font-size: clamp(3.1rem, 4.6vw, 4.1rem);
+  }
+
+  .hero-run-card p,
+  .hero-fast-actions > span {
+    font-size: 0.84rem;
+  }
+
+  .daily-loop {
+    display: none;
   }
 }
