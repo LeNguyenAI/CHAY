@@ -1546,26 +1546,26 @@ function createAmbientGraph(context, sound) {
   if (sound === "lofi") {
     const filter = context.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 950;
+    filter.frequency.value = 1450;
     filter.Q.value = 0.8;
     filter.connect(master);
     nodes.push(filter);
 
-    [196, 246.94, 293.66].forEach((frequency, index) => {
+    [196, 246.94, 329.63, 392].forEach((frequency, index) => {
       const oscillator = context.createOscillator();
       const gain = context.createGain();
       oscillator.type = index === 0 ? "sine" : "triangle";
       oscillator.frequency.value = frequency;
-      gain.gain.value = index === 0 ? 0.025 : 0.012;
+      gain.gain.value = index === 0 ? 0.035 : 0.019;
       oscillator.connect(gain);
       gain.connect(filter);
       sources.push(oscillator);
       nodes.push(oscillator, gain);
     });
 
-    const bed = createFilteredNoise(context, { type: "lowpass", frequency: 620, q: 0.5 });
+    const bed = createFilteredNoise(context, { type: "bandpass", frequency: 980, q: 0.7 });
     const bedGain = context.createGain();
-    bedGain.gain.value = 0.018;
+    bedGain.gain.value = 0.03;
     bed.output.connect(bedGain);
     bedGain.connect(filter);
     sources.push(bed.source);
@@ -1574,22 +1574,22 @@ function createAmbientGraph(context, sound) {
     const noise = createFilteredNoise(context, sound === "rain"
       ? { type: "highpass", frequency: 950, q: 0.9 }
       : sound === "cafe"
-        ? { type: "bandpass", frequency: 430, q: 0.55 }
+        ? { type: "bandpass", frequency: 760, q: 0.8 }
         : { type: "lowpass", frequency: 4200, q: 0.45 });
     const gain = context.createGain();
-    gain.gain.value = sound === "white" ? 0.045 : sound === "rain" ? 0.038 : 0.028;
+    gain.gain.value = sound === "white" ? 0.045 : sound === "rain" ? 0.038 : 0.052;
     noise.output.connect(gain);
     gain.connect(master);
     sources.push(noise.source);
     nodes.push(...noise.nodes, gain);
 
     if (sound === "cafe") {
-      [174, 233].forEach((frequency) => {
+      [220, 330, 440].forEach((frequency, index) => {
         const murmur = context.createOscillator();
         const murmurGain = context.createGain();
-        murmur.type = "sine";
+        murmur.type = index === 2 ? "triangle" : "sine";
         murmur.frequency.value = frequency;
-        murmurGain.gain.value = 0.006;
+        murmurGain.gain.value = index === 2 ? 0.008 : 0.01;
         murmur.connect(murmurGain);
         murmurGain.connect(master);
         sources.push(murmur);
@@ -1640,7 +1640,8 @@ function startAmbientSound(sound = state.ambientSound) {
     const graph = createAmbientGraph(context, sound);
     ambientAudio = { ...graph, context, sound };
     graph.sources.forEach((source) => source.start());
-    graph.master.gain.setTargetAtTime(0.16, context.currentTime, 0.18);
+    const targetGain = sound === "cafe" ? 0.22 : sound === "lofi" ? 0.2 : 0.16;
+    graph.master.gain.setTargetAtTime(targetGain, context.currentTime, 0.18);
   } catch {
     ambientAudio = null;
   }
