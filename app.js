@@ -569,8 +569,8 @@ function renderStats() {
   el.heroSprints.textContent = String(metrics.sprints || 0);
   el.heroRunStatus.textContent = getHeroRunStatus(metrics);
   el.todayProgressText.textContent = metrics.sprints
-    ? `Hôm nay đã có ${metrics.sprints} sprint. Mai chỉ cần quay lại và bật tiếp.`
-    : "Bắt đầu một sprint là ngày hôm nay đã có bằng chứng.";
+    ? `+${metrics.sprints} sprint hôm nay.`
+    : "Một phiên là đủ để bắt đầu.";
   el.heroCommitmentPreview.textContent = state.commitment || makeCommitment();
   renderMomentumOutputs();
 }
@@ -583,9 +583,9 @@ function getHeroRunStatus(metrics = todayMetrics()) {
 }
 
 function getStreakCopy(metrics = todayMetrics()) {
-  if (metrics.sprints) return `+${metrics.sprints} sprint hôm nay. Mai tiếp tục giữ nhịp.`;
-  if (state.lastCompletedDate === TODAY) return "Hôm nay đã có bằng chứng. Không cần làm quá tay.";
-  if (state.streak > 1) return "Chuỗi đang còn đó. Một phiên ngắn là đủ để nối tiếp.";
+  if (metrics.sprints) return "Mai tiếp tục giữ nhịp.";
+  if (state.lastCompletedDate === TODAY) return "Hôm nay đã có bằng chứng.";
+  if (state.streak > 1) return "Một phiên ngắn là đủ để nối tiếp.";
   return "Bắt đầu lại một nhịp mới.";
 }
 
@@ -596,7 +596,7 @@ function renderMomentumOutputs() {
   if (!outputs.length) {
     const empty = document.createElement("li");
     empty.className = "empty-state compact-empty";
-    empty.textContent = "Output gần đây sẽ hiện ở đây sau phiên đầu tiên.";
+    empty.textContent = "Output sẽ hiện sau phiên đầu.";
     el.momentumOutputs.append(empty);
     return;
   }
@@ -1149,7 +1149,7 @@ function updateTimerDisplay() {
   const minutes = Math.floor(timer.remaining / 60);
   const seconds = timer.remaining % 60;
   const value = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-  el.heroTimerDisplay.textContent = state.session?.status === "active" ? `${value} còn lại` : value;
+  el.heroTimerDisplay.textContent = value;
   el.timerDisplay.textContent = value;
   el.focusTimerDisplay.textContent = value;
 

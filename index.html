@@ -202,8 +202,6 @@
           </div>
         </div>
 
-        <img class="desk-art" src="assets/freelance-desk.svg" alt="Nhóm marketing chuyên nghiệp đang theo dõi chiến dịch trên bảng điều khiển">
-
         <section class="side-panel">
           <p class="panel-label">Momentum</p>
           <p class="feature-note" id="todayProgressText">Bắt đầu một sprint là ngày hôm nay đã có bằng chứng.</p>
@@ -221,26 +219,19 @@
           <ul class="momentum-output-list" id="momentumOutputs"></ul>
         </section>
 
-        <section class="side-panel">
-          <p class="panel-label">Hồ sơ làm việc</p>
-          <p class="feature-note">App dùng hồ sơ này để gợi ý template và câu nhắc hợp hơn với kiểu việc của bạn.</p>
+        <section class="side-panel profile-panel">
+          <p class="panel-label">Thiết lập</p>
           <div class="profile-chip" id="profileChip">Marketing freelancer</div>
-          <button class="ghost-button full-button" id="editProfileButton" type="button">
-            <span class="button-icon" aria-hidden="true">⚙</span>
-            Chỉnh hồ sơ
-          </button>
-          <button class="ghost-button full-button stacked-button" id="openSettingsButton" type="button">
-            <span class="button-icon" aria-hidden="true">✎</span>
-            Cài đặt câu nhắc
-          </button>
+          <div class="profile-actions">
+            <button class="ghost-button" id="editProfileButton" type="button">Hồ sơ</button>
+            <button class="ghost-button" id="openSettingsButton" type="button">Câu nhắc</button>
+          </div>
         </section>
 
         <section class="side-panel quote-panel">
-          <p class="panel-label">Cú hích nhanh</p>
-          <p class="feature-note">Một câu nhắc ngắn để kéo bạn quay lại hành động khi bắt đầu thấy chùng xuống.</p>
+          <p class="panel-label">Nhắc nhẹ</p>
           <blockquote id="dailyQuote"></blockquote>
           <button class="ghost-button" id="newQuoteButton" type="button">
-            <span class="button-icon" aria-hidden="true">✨</span>
             Đổi câu nhắc
           </button>
         </section>
@@ -250,11 +241,10 @@
         <header class="hero-section reveal">
           <div class="hero-copy-block">
             <p class="eyebrow" id="todayLabel"></p>
-            <h2>Một phiên để có bản nháp đầu tiên.</h2>
-            <p class="hero-copy">CHẠY biến trạng thái “để lát nữa” thành 3 bước nhỏ, một cam kết rõ, rồi mở RUN MODE để bạn bắt tay vào việc ngay.</p>
+            <h2>Bật một phiên. Tạo một đầu ra.</h2>
+            <p class="hero-copy">Chọn nhịp hiện tại, bấm CHẠY, làm bản đầu tiên.</p>
             <div class="hero-pills info-chips" aria-label="CHẠY phù hợp với ai">
               <span>M đang giữ nhịp.</span>
-              <span>Một phiên, một đầu ra</span>
               <span>Không cần hoàn hảo. Chỉ cần tiếp tục chạy.</span>
             </div>
           </div>
@@ -296,21 +286,19 @@
               <span class="button-icon" aria-hidden="true">⚡</span>
               Bật mode CHẠY
             </button>
-            <p class="button-help">Một nút: tạo checklist nếu cần, chạy timer, mở màn hình tập trung.</p>
+            <p class="button-help">Vào toàn màn hình tập trung ngay.</p>
           </div>
         </header>
 
         <nav class="mobile-nav" aria-label="Điều hướng nhanh">
-          <a href="#commandCenter">Hôm nay</a>
-          <a href="#templatesPanel">Template</a>
-          <a href="#focusPanel">Focus</a>
-          <a href="#reviewPanel">Tuần</a>
+          <a href="#taskPanel">Việc</a>
+          <a href="#templatesPanel">Mẫu</a>
+          <a href="#reviewPanel">Nhịp</a>
         </nav>
 
         <section class="checkin-band reveal" aria-label="Chọn trạng thái năng lượng">
           <div>
-            <p class="panel-label">Bạn đang ở mức nào?</p>
-            <p class="feature-note">Chọn trạng thái thật của bạn để nhận một gợi ý bắt đầu phù hợp, không ép bản thân quá sức.</p>
+            <p class="panel-label">Năng lượng</p>
             <div class="energy-options" id="energyOptions">
               <button class="energy-button" data-energy="low" type="button"><span aria-hidden="true">☁</span> Uể oải</button>
               <button class="energy-button active" data-energy="steady" type="button"><span aria-hidden="true">☀</span> Ổn định</button>
@@ -325,11 +313,10 @@
         <section class="run-mode-showcase tool-panel reveal" id="focusPanel">
           <div class="run-mode-copy">
             <p class="panel-label">RUN MODE</p>
-            <h3>Điều khiển phiên đang chạy</h3>
-            <p class="feature-note">Phần này dùng để đổi thời lượng, tạm dừng, reset hoặc mở lại toàn màn hình. Bắt đầu phiên vẫn ở nút Bật mode CHẠY phía trên.</p>
+            <h3>Phiên đang chạy</h3>
+            <p class="feature-note">Tạm dừng, reset hoặc mở lại toàn màn hình.</p>
             <div class="run-mode-prompts info-chips" aria-label="Nguyên tắc của RUN MODE">
               <span>Làm bản nháp trước.</span>
-              <span>Không cần hay ngay.</span>
               <span>Chỉ cần có cái để sửa.</span>
             </div>
           </div>
@@ -382,12 +369,10 @@
         <section class="command-center tool-panel reveal" id="commandCenter">
           <div class="section-heading">
             <div>
-              <p class="panel-label">Bảng thắng hôm nay</p>
-              <h3>Chọn 4 việc để ngày không trôi vô nghĩa</h3>
-              <p class="feature-note">Ghi nhanh việc liên quan đến tiền, deadline, tài sản dài hạn và năng lượng cá nhân.</p>
+              <p class="panel-label">Hôm nay</p>
+              <h3>Ghi nhanh điều đáng làm</h3>
             </div>
             <button class="ghost-button" id="saveCommandButton" type="button">
-              <span class="button-icon" aria-hidden="true">✦</span>
               Lưu ngày
             </button>
           </div>
@@ -415,9 +400,8 @@
           <article class="tool-panel templates-panel reveal" id="templatesPanel">
             <div class="section-heading">
               <div>
-                <p class="panel-label">Mẫu việc marketing</p>
-                <h3>Bấm một mẫu để có checklist ngay</h3>
-                <p class="feature-note">CHẠY cũng tự gợi ý 3 bước nhỏ theo hồ sơ và năng lượng của bạn. Chọn mẫu khi muốn đổi hướng.</p>
+                <p class="panel-label">Mẫu</p>
+                <h3>Đổi hướng nhanh</h3>
               </div>
             </div>
             <div class="template-grid" id="templateGrid"></div>
@@ -431,8 +415,7 @@
             <div class="section-heading">
               <div>
                 <p class="panel-label">3 việc chính</p>
-                <h3>Làm xong 3 việc là thắng ngày</h3>
-                <p class="feature-note">Mặc định là 3 bước nhỏ theo kiểu việc và năng lượng hiện tại. Sửa nếu cần, rồi bật RUN MODE.</p>
+                <h3>Chỉ giữ việc kéo bạn vào phiên</h3>
               </div>
               <button class="icon-button" id="clearDoneButton" type="button" aria-label="Ẩn việc đã xong" title="Ẩn việc đã xong">🧹</button>
             </div>
@@ -452,8 +435,7 @@
             <div class="section-heading">
               <div>
                 <p class="panel-label">Cam kết đầu ra</p>
-                <h3>Cuối phiên này phải có gì?</h3>
-                <p class="feature-note">Viết rõ sản phẩm cuối phiên để bạn không chỉ “ngồi làm” mà thật sự tạo ra thứ gì đó.</p>
+                <h3>Cuối phiên có gì?</h3>
               </div>
             </div>
             <label for="commitmentInput">Cuối phiên này tôi sẽ có:</label>
@@ -468,8 +450,7 @@
             <div class="section-heading">
               <div>
                 <p class="panel-label">Review tuần</p>
-                <h3>Tuần này bạn chạy được bao nhiêu?</h3>
-                <p class="feature-note">Xem nhanh số phiên tập trung, việc đã xong và mức năng lượng hay gặp.</p>
+                <h3>Nhịp đang tích lại</h3>
               </div>
             </div>
             <div class="review-grid">
@@ -485,7 +466,6 @@
               <div>
                 <p class="panel-label">Lịch sử output</p>
                 <h3>Tuần này mình đã tạo ra gì?</h3>
-                <p class="feature-note">Các phiên được nhóm theo ngày để bạn thấy hành động đang tích lại, không phải một danh sách task.</p>
               </div>
             </div>
             <ul class="activity-log" id="activityLog"></ul>

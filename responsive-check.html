@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CHẠY - responsive check</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 24px;
+        color: #f5f7fa;
+        background: #070908;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      h1,
+      h2,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 6px;
+        font-size: 24px;
+      }
+
+      p {
+        max-width: 720px;
+        margin-bottom: 24px;
+        color: #a6b0a9;
+        line-height: 1.5;
+      }
+
+      .frames {
+        display: grid;
+        gap: 28px;
+      }
+
+      .frame-card {
+        display: grid;
+        gap: 10px;
+        overflow-x: auto;
+      }
+
+      h2 {
+        margin-bottom: 0;
+        color: #c7ff4d;
+        font-size: 15px;
+        text-transform: uppercase;
+      }
+
+      iframe {
+        height: 820px;
+        border: 1px solid #2a3038;
+        border-radius: 8px;
+        background: #0d0f12;
+      }
+
+      .desktop iframe {
+        width: 1280px;
+      }
+
+      .tablet iframe {
+        width: 768px;
+      }
+
+      .mobile iframe {
+        width: 390px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CHẠY responsive check</h1>
+    <p>Trang này chỉ dùng để xem nhanh cùng một app ở desktop, tablet/iPad và mobile. Bản app chính vẫn là <a href="index.html">index.html</a>.</p>
+
+    <main class="frames">
+      <section class="frame-card desktop">
+        <h2>Desktop 1280</h2>
+        <iframe src="index.html" title="CHẠY desktop preview"></iframe>
+      </section>
+
+      <section class="frame-card tablet">
+        <h2>Tablet / iPad 768</h2>
+        <iframe src="index.html" title="CHẠY tablet preview"></iframe>
+      </section>
+
+      <section class="frame-card mobile">
+        <h2>Mobile 390</h2>
+        <iframe src="index.html" title="CHẠY mobile preview"></iframe>
+      </section>
+    </main>
+  </body>
+</html>
