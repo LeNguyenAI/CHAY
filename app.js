@@ -245,6 +245,7 @@ const el = {
   heroCommitmentPreview: document.querySelector("#heroCommitmentPreview"),
   heroRescueButton: document.querySelector("#heroRescueButton"),
   heroRescueOutput: document.querySelector("#heroRescueOutput"),
+  heroQuickWinButton: document.querySelector("#heroQuickWinButton"),
   heroDurationSelect: document.querySelector("#heroDurationSelect"),
   customDurationField: document.querySelector("#customDurationField"),
   customDurationInput: document.querySelector("#customDurationInput"),
@@ -494,6 +495,7 @@ function renderTemplates() {
     const button = document.createElement("button");
     button.className = `template-card ${state.selectedTemplate === template.id ? "active" : ""}`;
     button.type = "button";
+    button.dataset.templateId = template.id;
     button.innerHTML = `
       <span class="template-icon" aria-hidden="true">${template.icon}</span>
       <span>
@@ -1506,6 +1508,11 @@ el.timerResetButton.addEventListener("click", resetTimer);
 el.focusModeButton.addEventListener("click", () => toggleFocusMode(true));
 el.closeFocusButton.addEventListener("click", () => toggleFocusMode(false));
 el.heroRescueButton.addEventListener("click", rescue);
+el.heroQuickWinButton.addEventListener("click", () => {
+  applyTemplate("quick-win", { scrollToTasks: false });
+  el.heroRescueOutput.textContent = "Viết 3 bullet đầu tiên.";
+  activateRunMode();
+});
 el.rescueButton.addEventListener("click", rescue);
 el.focusRescueButton.addEventListener("click", rescue);
 el.completeDoneButton.addEventListener("click", () => finishSession("Đã xong."));

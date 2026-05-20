@@ -2939,6 +2939,36 @@ body.momentum-spark .hero-run-card .daily-loop strong {
   line-height: 1.35;
 }
 
+.hero-fast-actions {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+}
+
+.quick-win-button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  color: var(--black);
+  background: var(--white);
+  border: 1px solid var(--white);
+  border-radius: 8px;
+  font-weight: 950;
+  box-shadow: 0 0 24px rgba(199, 255, 77, 0.16);
+}
+
+.hero-fast-actions > span {
+  color: #cbd4ce;
+  font-size: 0.82rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
 .template-card:first-child {
   background: rgba(199, 255, 77, 0.095);
   border-color: rgba(199, 255, 77, 0.26);
@@ -2982,27 +3012,40 @@ body.momentum-spark .hero-run-card .daily-loop strong {
   }
 
   .hero-section {
-    padding-top: 8px;
+    gap: 10px;
+    padding-top: 4px;
   }
 
   .hero-section h2 {
-    max-width: 9.5ch;
-    font-size: clamp(2.65rem, 13.2vw, 3.55rem);
+    max-width: 12ch;
+    margin-bottom: 8px;
+    font-size: clamp(2.1rem, 10vw, 2.85rem);
+    line-height: 0.98;
   }
 
   .hero-copy-block .eyebrow {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .hero-run-card {
-    padding: 15px;
+    padding: 14px;
     border-color: rgba(199, 255, 77, 0.42);
     box-shadow: 0 22px 68px rgba(0, 0, 0, 0.48), 0 0 34px rgba(199, 255, 77, 0.12);
+  }
+
+  .hero-run-head {
+    margin-bottom: 10px;
+  }
+
+  .hero-run-time {
+    margin-bottom: 10px;
+    font-size: clamp(3rem, 15vw, 4rem);
   }
 
   .starter-chip {
     grid-template-columns: 1fr;
     gap: 7px;
+    margin-bottom: 10px;
     border-radius: 8px;
   }
 
@@ -3012,6 +3055,33 @@ body.momentum-spark .hero-run-card .daily-loop strong {
 
   .starter-chip span {
     text-align: center;
+  }
+
+  .hero-fast-actions {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .quick-win-button {
+    width: 100%;
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .hero-fast-actions > span {
+    text-align: center;
+  }
+
+  .daily-loop {
+    display: none;
+  }
+
+  .hero-duration {
+    margin: 10px 0;
+  }
+
+  .hero-run-card .primary-button {
+    min-height: 54px;
   }
 
   .checkin-band,
@@ -3052,6 +3122,13 @@ body.momentum-spark .hero-run-card .daily-loop strong {
     padding: 11px;
     background: rgba(21, 24, 29, 0.56);
     border-color: rgba(42, 48, 56, 0.62);
+  }
+
+  .template-card[data-template-id="quick-win"] {
+    grid-column: 1 / -1;
+    min-height: 74px;
+    background: rgba(199, 255, 77, 0.12);
+    border-color: rgba(199, 255, 77, 0.32);
   }
 
   .template-card strong {
