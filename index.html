@@ -511,19 +511,34 @@
 
     <section class="focus-overlay" id="focusOverlay" aria-hidden="true">
       <button class="icon-button focus-close" id="closeFocusButton" type="button" aria-label="Đóng focus mode">×</button>
-      <p class="eyebrow">RUN MODE</p>
-      <h2>Một phiên. Một đầu ra.</h2>
-      <div class="focus-time" id="focusTimerDisplay">25:00</div>
-      <p id="focusCommitmentText">Một phiên. Một đầu ra. Không cần hoàn hảo.</p>
-      <div class="timer-actions">
-        <button class="primary-button" id="focusToggleButton" type="button">
-          <span class="button-icon" aria-hidden="true">▶</span>
-          Chạy
-        </button>
-        <button class="ghost-button" id="focusRescueButton" type="button">
-          <span class="button-icon" aria-hidden="true">★</span>
-          Bước nhỏ
-        </button>
+      <div class="focus-session-view" id="focusSessionView">
+        <p class="eyebrow">RUN MODE</p>
+        <h2>Một phiên. Một đầu ra.</h2>
+        <div class="focus-time" id="focusTimerDisplay">25:00</div>
+        <p id="focusCommitmentText">Cuối phiên tôi sẽ có: một bản nháp đủ để sửa tiếp.</p>
+        <div class="timer-actions">
+          <button class="primary-button" id="focusToggleButton" type="button">
+            <span class="button-icon" aria-hidden="true">▶</span>
+            Tiếp tục
+          </button>
+          <button class="ghost-button" id="focusRescueButton" type="button">
+            <span class="button-icon" aria-hidden="true">★</span>
+            Bước nhỏ
+          </button>
+        </div>
+      </div>
+      <div class="completion-view" id="completionView" hidden>
+        <p class="eyebrow">RUN MODE</p>
+        <h2>Phiên hoàn thành. M đã tạo ra gì?</h2>
+        <p id="completionCommitmentText">Ghi nhận phiên này để giữ nhịp hôm nay.</p>
+        <div class="completion-actions">
+          <button class="primary-button" id="completeDoneButton" type="button">
+            <span class="button-icon" aria-hidden="true">✓</span>
+            Đã xong
+          </button>
+          <button class="ghost-button" id="completeProgressButton" type="button">Chưa xong nhưng đã tiến lên</button>
+          <button class="ghost-button" id="extendSessionButton" type="button">Thêm 10 phút</button>
+        </div>
       </div>
     </section>
 

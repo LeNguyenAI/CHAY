@@ -974,6 +974,18 @@ select:focus {
   display: grid;
 }
 
+.focus-session-view,
+.completion-view {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+}
+
+.focus-session-view[hidden],
+.completion-view[hidden] {
+  display: none;
+}
+
 .focus-overlay h2 {
   max-width: 760px;
   margin: 0;
@@ -997,6 +1009,13 @@ select:focus {
   margin: 0;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.completion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
 }
 
 .focus-close {
@@ -1280,6 +1299,11 @@ button {
   border-radius: 8px;
   background: linear-gradient(180deg, rgba(27, 31, 36, 0.92), rgba(15, 18, 21, 0.92));
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45), 0 0 36px rgba(199, 255, 77, 0.12);
+}
+
+.hero-run-card.session-active {
+  border-color: rgba(199, 255, 77, 0.72);
+  box-shadow: 0 26px 84px rgba(0, 0, 0, 0.48), 0 0 34px rgba(199, 255, 77, 0.22);
 }
 
 .hero-run-head {

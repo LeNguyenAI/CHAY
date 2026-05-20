@@ -171,7 +171,9 @@ const defaultState = {
   },
   quotes: [],
   templates: [],
-  metrics: {}
+  metrics: {},
+  session: null,
+  lastDuration: 25
 };
 
 let state = loadState();
@@ -179,9 +181,9 @@ let audioContext;
 let timer = {
   duration: 25 * 60,
   remaining: 25 * 60,
-  running: false,
-  interval: null
+  running: false
 };
+let timerInterval = null;
 
 const el = {
   onboardingModal: document.querySelector("#onboardingModal"),
@@ -243,10 +245,16 @@ const el = {
   activityLog: document.querySelector("#activityLog"),
   focusOverlay: document.querySelector("#focusOverlay"),
   closeFocusButton: document.querySelector("#closeFocusButton"),
+  focusSessionView: document.querySelector("#focusSessionView"),
+  completionView: document.querySelector("#completionView"),
   focusTimerDisplay: document.querySelector("#focusTimerDisplay"),
   focusCommitmentText: document.querySelector("#focusCommitmentText"),
   focusToggleButton: document.querySelector("#focusToggleButton"),
   focusRescueButton: document.querySelector("#focusRescueButton"),
+  completionCommitmentText: document.querySelector("#completionCommitmentText"),
+  completeDoneButton: document.querySelector("#completeDoneButton"),
+  completeProgressButton: document.querySelector("#completeProgressButton"),
+  extendSessionButton: document.querySelector("#extendSessionButton"),
   settingsModal: document.querySelector("#settingsModal"),
   closeSettingsButton: document.querySelector("#closeSettingsButton"),
   quoteSettingsInput: document.querySelector("#quoteSettingsInput"),
@@ -279,7 +287,9 @@ function loadState() {
     commandLabels: { ...defaultState.commandLabels, ...((saved || {}).commandLabels || {}) },
     quotes: Array.isArray((saved || {}).quotes) && (saved || {}).quotes.length ? (saved || {}).quotes : [...defaultQuotes],
     templates: Array.isArray((saved || {}).templates) && (saved || {}).templates.length ? (saved || {}).templates : cloneTemplates(defaultTemplates),
-    metrics: { ...((saved || {}).metrics || {}) }
+    metrics: { ...((saved || {}).metrics || {}) },
+    session: (saved || {}).session || null,
+    lastDuration: (saved || {}).lastDuration || defaultState.lastDuration
   };
 
   if (merged.date !== TODAY) {
@@ -410,6 +420,7 @@ function render() {
   renderWeeklyReview();
   renderLog();
   updateTimerDisplay();
+  updateTimerButtons();
   syncFocusView();
   toggleOnboarding(!state.profile.onboarded);
 }
@@ -524,9 +535,9 @@ function renderStats() {
 }
 
 function getHeroRunStatus(metrics = todayMetrics()) {
-  if (timer.running) return "Đang tập trung";
-  if (timer.remaining === 0) return "Sprint đã xong";
-  if (timer.remaining < timer.duration) return "Đang tạm dừng";
+  if (state.session?.status === "active") return "ĐANG CHẠY";
+  if (state.session?.status === "paused") return "ĐANG TẠM DỪNG";
+  if (state.session?.status === "completed") return "HOÀN THÀNH";
   return metrics.sprints ? "Đã có bằng chứng hôm nay" : "Sẵn sàng trong 1 click";
 }
 
@@ -742,12 +753,16 @@ function syncDurationControls(minutes, source = "") {
 
 function setDuration(minutes, options = {}) {
   const nextMinutes = clampDuration(minutes);
-  stopTimer("Sẵn sàng");
+  if (isSessionActive()) return;
+  clearSessionTicker();
+  state.session = null;
+  state.lastDuration = nextMinutes;
   timer.duration = nextMinutes * 60;
   timer.remaining = timer.duration;
   syncDurationControls(nextMinutes, options.source);
   updateTimerDisplay();
   updateTimerButtons();
+  saveState();
 }
 
 function applyHeroDuration() {
@@ -755,86 +770,254 @@ function applyHeroDuration() {
     ? clampDuration(el.customDurationInput.value)
     : clampDuration(el.heroDurationSelect.value);
 
-  if (!timer.running && (timer.remaining === timer.duration || timer.remaining === 0)) {
+  if (!isSessionActive() && !isSessionCompleted()) {
     setDuration(minutes, { source: el.heroDurationSelect.value === "custom" ? "custom" : "hero" });
   }
 }
 
 function toggleTimer() {
-  if (timer.running) {
-    stopTimer("Tạm nghỉ");
+  if (isSessionCompleted()) {
+    toggleFocusMode(true);
     return;
   }
 
-  timer.running = true;
-  el.timerState.textContent = "Đang tập trung";
-  timer.interval = window.setInterval(() => {
-    timer.remaining -= 1;
-    if (timer.remaining <= 0) {
-      timer.remaining = 0;
-      completeSprint();
-    }
-    updateTimerDisplay();
-  }, 1000);
-  updateTimerButtons();
+  if (!state.session) {
+    startSession();
+    return;
+  }
+
+  if (state.session.status === "active") {
+    pauseSession();
+    return;
+  }
+
+  resumeSession();
 }
 
-function completeSprint() {
-  stopTimer("Đã xong");
-  todayMetrics().sprints += 1;
-  addLog(`Hoàn thành một sprint ${Math.round(timer.duration / 60)} phút. Đóng phiên gọn, mai quay lại bật CHẠY tiếp.`);
-  playChime();
-  saveAndRender();
+function isSessionActive() {
+  return state.session?.status === "active" || state.session?.status === "paused";
 }
 
-function stopTimer(label = "Tạm nghỉ") {
-  timer.running = false;
-  window.clearInterval(timer.interval);
-  timer.interval = null;
-  el.timerState.textContent = timer.remaining === 0 ? "Đã xong" : label;
-  updateTimerButtons();
+function isSessionCompleted() {
+  return state.session?.status === "completed";
 }
 
-function resetTimer() {
-  stopTimer("Sẵn sàng");
-  timer.remaining = timer.duration;
+function startSession(extraMinutes) {
+  const minutes = extraMinutes || clampDuration(el.heroDurationSelect.value === "custom"
+    ? el.customDurationInput.value
+    : el.heroDurationSelect.value);
+  const duration = minutes * 60;
+  const now = Date.now();
+  const commitment = state.commitment || makeCommitment();
+  state.commitment = commitment;
+  state.lastDuration = minutes;
+  state.session = {
+    status: "active",
+    duration,
+    remaining: duration,
+    startedAt: now,
+    endsAt: now + duration * 1000,
+    commitment,
+    loggedStart: false
+  };
+  syncDurationControls(minutes);
+  startSessionTicker();
+  saveState();
   updateTimerDisplay();
   updateTimerButtons();
 }
 
-function updateTimerButtons() {
-  const content = timer.running
-    ? '<span class="button-icon" aria-hidden="true">Ⅱ</span> Tạm dừng'
-    : '<span class="button-icon" aria-hidden="true">▶</span> Chạy';
-  el.timerToggleButton.innerHTML = content;
-  el.focusToggleButton.innerHTML = content;
+function pauseSession() {
+  if (state.session?.status !== "active") return;
+  state.session.remaining = getRemainingSeconds();
+  state.session.status = "paused";
+  delete state.session.endsAt;
+  clearSessionTicker();
+  saveState();
+  updateTimerDisplay();
+  updateTimerButtons();
+}
 
-  const heroContent = timer.running
-    ? '<span class="button-icon" aria-hidden="true">⚡</span> Đang CHẠY'
-    : timer.remaining < timer.duration && timer.remaining > 0
-      ? '<span class="button-icon" aria-hidden="true">▶</span> Chạy tiếp'
-      : '<span class="button-icon" aria-hidden="true">⚡</span> Bật mode CHẠY';
+function resumeSession() {
+  if (state.session?.status !== "paused") return;
+  const now = Date.now();
+  state.session.status = "active";
+  state.session.endsAt = now + state.session.remaining * 1000;
+  startSessionTicker();
+  saveState();
+  updateTimerDisplay();
+  updateTimerButtons();
+}
+
+function resetTimer() {
+  clearSessionTicker();
+  state.session = null;
+  timer.running = false;
+  timer.duration = (state.lastDuration || 25) * 60;
+  timer.remaining = timer.duration;
+  syncDurationControls(state.lastDuration || 25);
+  saveState();
+  updateTimerDisplay();
+  updateTimerButtons();
+}
+
+function extendSession(minutes = 10) {
+  const addedSeconds = minutes * 60;
+  const currentRemaining = Math.max(getRemainingSeconds(), 0);
+  const now = Date.now();
+  const nextRemaining = currentRemaining + addedSeconds;
+  state.session = {
+    ...(state.session || {}),
+    status: "active",
+    duration: (state.session?.duration || 0) + addedSeconds,
+    remaining: nextRemaining,
+    endsAt: now + nextRemaining * 1000,
+    commitment: state.session?.commitment || state.commitment || makeCommitment()
+  };
+  startSessionTicker();
+  saveState();
+  toggleFocusMode(true);
+  updateTimerDisplay();
+  updateTimerButtons();
+}
+
+function getRemainingSeconds() {
+  if (!state.session) return timer.remaining;
+  if (state.session.status === "active" && state.session.endsAt) {
+    return Math.max(0, Math.ceil((state.session.endsAt - Date.now()) / 1000));
+  }
+  return Math.max(0, state.session.remaining || 0);
+}
+
+function completeSession() {
+  if (!state.session || state.session.status === "completed") return;
+  state.session.status = "completed";
+  state.session.remaining = 0;
+  state.session.completedAt = new Date().toISOString();
+  clearSessionTicker();
+  playChime();
+  saveState();
+  toggleFocusMode(true);
+  updateTimerDisplay();
+  updateTimerButtons();
+}
+
+function finishSession(resultText) {
+  if (!state.session) return;
+  const durationMinutes = Math.round((state.session.duration || timer.duration) / 60);
+  todayMetrics().sprints += 1;
+  addLog(`${resultText} Sprint ${durationMinutes} phút đã được ghi nhận. Mai quay lại bật CHẠY tiếp.`);
+  state.session = null;
+  timer.running = false;
+  timer.duration = (state.lastDuration || durationMinutes || 25) * 60;
+  timer.remaining = timer.duration;
+  updateStreakFromSprint();
+  saveState();
+  toggleFocusMode(false);
+  saveAndRender();
+}
+
+function updateStreakFromSprint() {
+  if (state.lastCompletedDate === TODAY) return;
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayKey = getDateKey(yesterday);
+  state.streak = state.lastCompletedDate === yesterdayKey ? state.streak + 1 : 1;
+  state.lastCompletedDate = TODAY;
+}
+
+function startSessionTicker() {
+  clearSessionTicker();
+  timerInterval = window.setInterval(() => {
+    updateTimerDisplay();
+    updateTimerButtons();
+    if (state.session?.status === "active" && getRemainingSeconds() <= 0) {
+      completeSession();
+    }
+  }, 1000);
+}
+
+function clearSessionTicker() {
+  window.clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function restoreSession() {
+  if (!state.session) {
+    timer.duration = (state.lastDuration || 25) * 60;
+    timer.remaining = timer.duration;
+    syncDurationControls(state.lastDuration || 25);
+    return;
+  }
+
+  timer.duration = state.session.duration || (state.lastDuration || 25) * 60;
+  timer.remaining = getRemainingSeconds();
+  if (state.session.status === "active" && timer.remaining <= 0) {
+    completeSession();
+    return;
+  }
+  if (state.session.status === "active") startSessionTicker();
+  syncDurationControls(Math.round(timer.duration / 60));
+}
+
+function updateTimerButtons() {
+  const completed = isSessionCompleted();
+  const active = state.session?.status === "active";
+  const paused = state.session?.status === "paused";
+  const content = active
+    ? '<span class="button-icon" aria-hidden="true">Ⅱ</span> Tạm dừng'
+    : state.session
+      ? '<span class="button-icon" aria-hidden="true">▶</span> Tiếp tục'
+      : '<span class="button-icon" aria-hidden="true">▶</span> Chạy';
+  el.timerToggleButton.innerHTML = content;
+  el.focusToggleButton.innerHTML = active
+    ? '<span class="button-icon" aria-hidden="true">Ⅱ</span> Tạm dừng'
+    : '<span class="button-icon" aria-hidden="true">▶</span> Tiếp tục';
+
+  const heroContent = active || paused || completed
+    ? '<span class="button-icon" aria-hidden="true">▶</span> Tiếp tục phiên'
+    : '<span class="button-icon" aria-hidden="true">⚡</span> Bật mode CHẠY';
   el.startDayButton.innerHTML = heroContent;
-  el.startDayButton.classList.toggle("is-running", timer.running);
+  el.startDayButton.classList.toggle("is-running", active || paused || completed);
+  el.startDayButton.closest(".hero-run-card")?.classList.toggle("session-active", active || paused);
+  el.heroDurationSelect.disabled = active || paused;
+  el.customDurationInput.disabled = active || paused;
+  el.durationSelect.disabled = active || paused;
+  el.timerState.textContent = completed ? "Đã xong" : active ? "Đang tập trung" : paused ? "Tạm dừng" : "Sẵn sàng";
   el.heroRunStatus.textContent = getHeroRunStatus();
 }
 
 function updateTimerDisplay() {
+  timer.duration = state.session?.duration || timer.duration;
+  timer.remaining = getRemainingSeconds();
+  timer.running = state.session?.status === "active";
   const minutes = Math.floor(timer.remaining / 60);
   const seconds = timer.remaining % 60;
   const value = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-  el.heroTimerDisplay.textContent = value;
+  el.heroTimerDisplay.textContent = state.session?.status === "active" ? `${value} còn lại` : value;
   el.timerDisplay.textContent = value;
   el.focusTimerDisplay.textContent = value;
 
   const circumference = 326.7;
-  const progress = 1 - timer.remaining / timer.duration;
+  const progress = timer.duration ? 1 - timer.remaining / timer.duration : 0;
   el.timerRing.style.strokeDashoffset = String(circumference - circumference * progress);
+  syncFocusView();
+}
+
+function cleanCommitmentText(text) {
+  return (text || "một bản nháp đủ để sửa tiếp")
+    .replace(/^Cuối phiên này tôi sẽ có:?\s*/i, "")
+    .replace(/^Cuối phiên tôi sẽ có:?\s*/i, "")
+    .trim();
 }
 
 function syncFocusView() {
-  const commitment = state.commitment || "Viết cam kết bàn giao để não biết cần kết thúc ở đâu.";
-  el.focusCommitmentText.textContent = commitment;
+  const commitment = cleanCommitmentText(state.session?.commitment || state.commitment);
+  el.focusCommitmentText.textContent = `Cuối phiên tôi sẽ có: ${commitment}`;
+  el.completionCommitmentText.textContent = `Mục tiêu phiên này: ${commitment}`;
+  const completed = isSessionCompleted();
+  el.focusSessionView.hidden = completed;
+  el.completionView.hidden = !completed;
 }
 
 function toggleFocusMode(show) {
@@ -919,7 +1102,8 @@ function saveSettings() {
 }
 
 function resetToday() {
-  stopTimer("Sẵn sàng");
+  clearSessionTicker();
+  state.session = null;
   timer.remaining = timer.duration;
   state.tasks = [];
   state.command = { ...defaultState.command };
@@ -946,7 +1130,12 @@ function resetSettings() {
 }
 
 function activateRunMode() {
-  applyHeroDuration();
+  if (state.session) {
+    toggleFocusMode(true);
+    updateTimerDisplay();
+    updateTimerButtons();
+    return;
+  }
 
   if (!state.tasks.length) {
     applySmartPlan({ overwrite: true });
@@ -956,14 +1145,13 @@ function activateRunMode() {
     state.commitment = makeCommitment();
   }
 
+  applyHeroDuration();
   addLog("Đã bật RUN MODE: mở màn hình tập trung, chuẩn bị checklist và bắt đầu phiên chạy việc.");
   saveState();
   render();
 
-  if (!timer.running) toggleTimer();
+  startSession();
   toggleFocusMode(true);
-  el.startDayButton.classList.add("is-running");
-  el.startDayButton.innerHTML = '<span class="button-icon" aria-hidden="true">⚡</span> Đang CHẠY';
 }
 
 function rescue() {
@@ -1063,7 +1251,7 @@ el.customDurationInput.addEventListener("change", () => {
   setDuration(el.customDurationInput.value, { source: "custom" });
 });
 el.customDurationInput.addEventListener("input", () => {
-  if (timer.running) return;
+  if (isSessionActive()) return;
   const minutes = clampDuration(el.customDurationInput.value);
   timer.duration = minutes * 60;
   timer.remaining = timer.duration;
@@ -1078,6 +1266,9 @@ el.focusModeButton.addEventListener("click", () => toggleFocusMode(true));
 el.closeFocusButton.addEventListener("click", () => toggleFocusMode(false));
 el.rescueButton.addEventListener("click", rescue);
 el.focusRescueButton.addEventListener("click", rescue);
+el.completeDoneButton.addEventListener("click", () => finishSession("Đã xong."));
+el.completeProgressButton.addEventListener("click", () => finishSession("Chưa xong nhưng đã tiến lên."));
+el.extendSessionButton.addEventListener("click", () => extendSession(10));
 
 el.saveCommitmentButton.addEventListener("click", () => {
   state.commitment = el.commitmentInput.value.trim();
@@ -1088,4 +1279,5 @@ el.saveCommitmentButton.addEventListener("click", () => {
   saveAndRender();
 });
 
+restoreSession();
 render();
