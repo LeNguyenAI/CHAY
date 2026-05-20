@@ -238,11 +238,13 @@ const defaultState = {
   templates: [],
   metrics: {},
   session: null,
-  lastDuration: 25
+  lastDuration: 25,
+  ambientSound: "off"
 };
 
 let state = loadState();
 let audioContext;
+let ambientAudio = null;
 let timer = {
   duration: 25 * 60,
   remaining: 25 * 60,
@@ -321,6 +323,7 @@ const el = {
   focusCommitmentText: document.querySelector("#focusCommitmentText"),
   focusToggleButton: document.querySelector("#focusToggleButton"),
   focusRescueButton: document.querySelector("#focusRescueButton"),
+  ambientSoundSelect: document.querySelector("#ambientSoundSelect"),
   completionCommitmentText: document.querySelector("#completionCommitmentText"),
   completionSprintReward: document.querySelector("#completionSprintReward"),
   completionStreakReward: document.querySelector("#completionStreakReward"),
@@ -484,6 +487,7 @@ function render() {
   el.dailyQuote.textContent = activeQuotes[state.quoteIndex % activeQuotes.length];
   el.energyNudge.textContent = nudges[state.energy];
   el.commitmentInput.value = state.commitment;
+  el.ambientSoundSelect.value = state.ambientSound || "off";
   el.moneyInput.value = state.command.money;
   el.deliveryInput.value = state.command.delivery;
   el.assetInput.value = state.command.asset;
@@ -1053,6 +1057,7 @@ function startSession(extraMinutes) {
   saveState();
   updateTimerDisplay();
   updateTimerButtons();
+  startAmbientIfNeeded();
 }
 
 function pauseSession() {
@@ -1061,6 +1066,7 @@ function pauseSession() {
   state.session.status = "paused";
   delete state.session.endsAt;
   clearSessionTicker();
+  stopAmbientSound();
   saveState();
   updateTimerDisplay();
   updateTimerButtons();
@@ -1072,6 +1078,7 @@ function resumeSession() {
   state.session.status = "active";
   state.session.endsAt = now + state.session.remaining * 1000;
   startSessionTicker();
+  startAmbientIfNeeded();
   saveState();
   updateTimerDisplay();
   updateTimerButtons();
@@ -1079,6 +1086,7 @@ function resumeSession() {
 
 function resetTimer() {
   clearSessionTicker();
+  stopAmbientSound();
   state.session = null;
   timer.running = false;
   timer.duration = (state.lastDuration || 25) * 60;
@@ -1120,6 +1128,7 @@ function getRemainingSeconds() {
 function completeSession() {
   if (!state.session || state.session.status === "completed") return;
   clearSessionTicker();
+  stopAmbientSound();
   state.session.remaining = 0;
   updateTimerDisplay();
   updateTimerButtons();
@@ -1147,6 +1156,7 @@ function completeSession() {
 
 function finishSession(resultText) {
   if (!state.session) return;
+  stopAmbientSound();
   const durationMinutes = Math.round((state.session.duration || timer.duration) / 60);
   todayMetrics().sprints += 1;
   const output = cleanCommitmentText(state.session.commitment || state.commitment);
@@ -1375,6 +1385,7 @@ function saveSettings() {
 
 function resetToday() {
   clearSessionTicker();
+  stopAmbientSound();
   state.session = null;
   timer.remaining = timer.duration;
   state.tasks = [];
@@ -1493,6 +1504,164 @@ function playChime() {
   }
 }
 
+function getAudioContext() {
+  const AudioEngine = window.AudioContext || window.webkitAudioContext;
+  if (!AudioEngine) return null;
+  audioContext = audioContext || new AudioEngine();
+  if (audioContext.state === "suspended") audioContext.resume();
+  return audioContext;
+}
+
+function createNoiseSource(context) {
+  const bufferSize = context.sampleRate * 2;
+  const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
+  const output = buffer.getChannelData(0);
+
+  for (let index = 0; index < bufferSize; index += 1) {
+    output[index] = Math.random() * 2 - 1;
+  }
+
+  const source = context.createBufferSource();
+  source.buffer = buffer;
+  source.loop = true;
+  return source;
+}
+
+function createFilteredNoise(context, options = {}) {
+  const source = createNoiseSource(context);
+  const filter = context.createBiquadFilter();
+  filter.type = options.type || "lowpass";
+  filter.frequency.value = options.frequency || 1200;
+  filter.Q.value = options.q || 0.7;
+  source.connect(filter);
+  return { source, output: filter, nodes: [source, filter] };
+}
+
+function createAmbientGraph(context, sound) {
+  const master = context.createGain();
+  master.gain.value = 0.001;
+  const nodes = [master];
+  const sources = [];
+
+  if (sound === "lofi") {
+    const filter = context.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 950;
+    filter.Q.value = 0.8;
+    filter.connect(master);
+    nodes.push(filter);
+
+    [196, 246.94, 293.66].forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = index === 0 ? "sine" : "triangle";
+      oscillator.frequency.value = frequency;
+      gain.gain.value = index === 0 ? 0.025 : 0.012;
+      oscillator.connect(gain);
+      gain.connect(filter);
+      sources.push(oscillator);
+      nodes.push(oscillator, gain);
+    });
+
+    const bed = createFilteredNoise(context, { type: "lowpass", frequency: 620, q: 0.5 });
+    const bedGain = context.createGain();
+    bedGain.gain.value = 0.018;
+    bed.output.connect(bedGain);
+    bedGain.connect(filter);
+    sources.push(bed.source);
+    nodes.push(...bed.nodes, bedGain);
+  } else {
+    const noise = createFilteredNoise(context, sound === "rain"
+      ? { type: "highpass", frequency: 950, q: 0.9 }
+      : sound === "cafe"
+        ? { type: "bandpass", frequency: 430, q: 0.55 }
+        : { type: "lowpass", frequency: 4200, q: 0.45 });
+    const gain = context.createGain();
+    gain.gain.value = sound === "white" ? 0.045 : sound === "rain" ? 0.038 : 0.028;
+    noise.output.connect(gain);
+    gain.connect(master);
+    sources.push(noise.source);
+    nodes.push(...noise.nodes, gain);
+
+    if (sound === "cafe") {
+      [174, 233].forEach((frequency) => {
+        const murmur = context.createOscillator();
+        const murmurGain = context.createGain();
+        murmur.type = "sine";
+        murmur.frequency.value = frequency;
+        murmurGain.gain.value = 0.006;
+        murmur.connect(murmurGain);
+        murmurGain.connect(master);
+        sources.push(murmur);
+        nodes.push(murmur, murmurGain);
+      });
+    }
+  }
+
+  master.connect(context.destination);
+  return { master, nodes, sources };
+}
+
+function stopAmbientSound() {
+  if (!ambientAudio) return;
+  const current = ambientAudio;
+  ambientAudio = null;
+
+  try {
+    const now = current.context.currentTime;
+    current.master.gain.cancelScheduledValues(now);
+    current.master.gain.setTargetAtTime(0.001, now, 0.08);
+    window.setTimeout(() => {
+      current.sources.forEach((source) => {
+        try {
+          source.stop();
+        } catch {}
+      });
+      current.nodes.forEach((node) => {
+        try {
+          node.disconnect();
+        } catch {}
+      });
+    }, 220);
+  } catch {}
+}
+
+function startAmbientSound(sound = state.ambientSound) {
+  if (!sound || sound === "off") {
+    stopAmbientSound();
+    return;
+  }
+
+  const context = getAudioContext();
+  if (!context) return;
+  stopAmbientSound();
+
+  try {
+    const graph = createAmbientGraph(context, sound);
+    ambientAudio = { ...graph, context, sound };
+    graph.sources.forEach((source) => source.start());
+    graph.master.gain.setTargetAtTime(0.16, context.currentTime, 0.18);
+  } catch {
+    ambientAudio = null;
+  }
+}
+
+function startAmbientIfNeeded() {
+  if (state.session?.status === "active" && state.ambientSound && state.ambientSound !== "off") {
+    startAmbientSound(state.ambientSound);
+  }
+}
+
+function setAmbientSound(sound) {
+  state.ambientSound = sound;
+  saveState();
+  if (state.session?.status === "active") {
+    startAmbientSound(sound);
+  } else {
+    stopAmbientSound();
+  }
+}
+
 el.taskForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const text = el.taskInput.value.trim();
@@ -1571,6 +1740,7 @@ el.focusToggleButton.addEventListener("click", toggleTimer);
 el.timerResetButton.addEventListener("click", resetTimer);
 el.focusModeButton.addEventListener("click", () => toggleFocusMode(true));
 el.closeFocusButton.addEventListener("click", () => toggleFocusMode(false));
+el.ambientSoundSelect.addEventListener("change", (event) => setAmbientSound(event.target.value));
 el.heroRescueButton.addEventListener("click", rescue);
 el.heroQuickWinButton.addEventListener("click", instantQuickWinStart);
 el.rescueButton.addEventListener("click", rescue);
@@ -1606,3 +1776,9 @@ el.saveCommitmentButton.addEventListener("click", () => {
 
 restoreSession();
 render();
+
+if ("serviceWorker" in navigator && window.isSecureContext) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+  });
+}

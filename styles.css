@@ -1152,6 +1152,32 @@ select:focus {
   line-height: 1.5;
 }
 
+.sound-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  padding: 6px 8px 6px 12px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(199, 255, 77, 0.18);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.sound-control select {
+  width: auto;
+  min-height: 30px;
+  margin: 0;
+  padding: 0 26px 0 10px;
+  color: var(--ink);
+  background: rgba(7, 9, 8, 0.86);
+  border-color: rgba(199, 255, 77, 0.2);
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
 .completion-actions {
   display: flex;
   flex-wrap: wrap;
@@ -2133,6 +2159,15 @@ select:focus-visible {
 
   .focus-time {
     font-size: clamp(3rem, 17vw, 4.3rem);
+  }
+
+  .sound-control {
+    width: min(260px, 100%);
+    justify-content: space-between;
+  }
+
+  .sound-control select {
+    max-width: 150px;
   }
 
   .scroll-top-button,

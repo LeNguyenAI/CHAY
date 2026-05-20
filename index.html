@@ -6,6 +6,13 @@
     <title>CHẠY - bắt đầu nhẹ hơn</title>
     <meta name="description" content="CHẠY giúp freelancer và creator bớt nghĩ quá lâu, chọn một bước nhỏ và vào phiên làm việc ngay.">
     <meta name="theme-color" content="#0D0F12">
+    <meta name="application-name" content="CHẠY">
+    <meta name="apple-mobile-web-app-title" content="CHẠY">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/pwa-icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/pwa-icon-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -519,6 +526,16 @@
             Bước nhỏ
           </button>
         </div>
+        <label class="sound-control">
+          <span>Âm nền</span>
+          <select id="ambientSoundSelect" aria-label="Chọn âm nền tập trung">
+            <option value="off">Tắt</option>
+            <option value="rain">Mưa</option>
+            <option value="cafe">Cafe</option>
+            <option value="white">White noise</option>
+            <option value="lofi">Lofi</option>
+          </select>
+        </label>
       </div>
       <div class="completion-view" id="completionView" hidden>
         <p class="eyebrow">RUN MODE</p>
