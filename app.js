@@ -25,18 +25,18 @@ const goalLabels = {
 };
 
 const defaultQuotes = [
-  "Làm trước rồi mới có động lực. Đừng đợi não thuyết phục bạn.",
-  "Bản đầu tiên chưa cần hay. Chỉ cần viết ra để còn sửa.",
-  "Hôm nay không cần làm quá nhiều. Chỉ cần xong một việc thật sự quan trọng.",
+  "Mở việc ra trước. Cảm giác rõ hơn sẽ đến sau.",
+  "Bản đầu tiên được phép xấu. Nó chỉ cần tồn tại.",
+  "Hôm nay chỉ cần một đầu ra nhỏ cũng đủ có đà.",
   "Nếu đang né việc, hãy làm nó nhỏ lại: mở file, viết một dòng, gửi một tin nhắn.",
-  "Người làm sáng tạo không thiếu ý tưởng. Thứ cần là một khoảng yên để bắt đầu.",
+  "Không cần nghĩ hết đường. Chỉ cần bước đầu tiên.",
   "Không cần hoàn hảo. Chỉ cần bật lên và CHẠY."
 ];
 
 const nudges = {
-  low: "Đừng ép mình thành người siêu năng suất. Chọn một bước nhỏ, chạy 15 phút, tạo đà trước.",
-  steady: "Bạn đang đủ ổn để làm việc thật. Chọn một đầu ra cụ thể và để RUN MODE giữ nhịp.",
-  sharp: "Dùng phiên đầu cho việc có lực nhất: concept, hook, proposal, strategy hoặc phần khách hàng sẽ thấy."
+  low: "Nhẹ thôi: mở file, viết 1 dòng, chạy 10 phút.",
+  steady: "Chọn một đầu ra nhỏ. Bật RUN MODE.",
+  sharp: "Lấy phần khách sẽ thấy. Làm bản đầu trước."
 };
 
 const energyTaskPrefix = {
@@ -82,6 +82,13 @@ const outputNouns = {
 };
 
 const defaultTemplates = [
+  {
+    id: "quick-win",
+    icon: "⚡",
+    title: "Quick win",
+    note: "Một việc nhỏ để có đà ngay.",
+    tasks: ["Gửi 1 follow-up", "Viết 3 bullet", "Mở file dang dở"]
+  },
   {
     id: "content",
     icon: "✍",
@@ -134,37 +141,40 @@ const defaultTemplates = [
 ];
 
 const rescueSteps = [
-  "Mở đúng file cần làm. Chỉ mở thôi cũng được, nhưng mở ngay.",
-  "Viết 3 ý ngắn, chưa cần hay. Có chữ trên màn hình là đã bắt đầu.",
-  "Chọn đúng một khách hàng hoặc một việc. Đừng ôm quá nhiều trong một phiên.",
-  "Đặt timer 15 phút và làm phần dễ nhất: tiêu đề, dàn ý, số liệu hoặc tin nhắn cập nhật.",
-  "Tự hứa: cuối phiên này mình chỉ cần có bản nháp để sửa tiếp."
+  "Mở file cần làm.",
+  "Viết 3 bullet đầu tiên.",
+  "Chỉ làm 5 phút đầu.",
+  "Viết bản nháp xấu trước.",
+  "Gửi 1 follow-up ngắn.",
+  "Sửa 1 hook trước.",
+  "Dọn inbox 5 phút.",
+  "Chọn 1 phần dễ nhất và làm ngay."
 ];
 
 const contextualStepRules = [
   {
     match: ["landing", "page", "trang"],
-    steps: ["Viết headline trước. Chỉ cần một câu rõ lợi ích.", "Viết 3 bullet đầu tiên, chưa cần đẹp.", "Phác CTA cuối trang trong một dòng."]
+    steps: ["Viết headline xấu trước.", "Viết 3 bullet đầu tiên.", "Phác CTA trong một dòng."]
   },
   {
     match: ["email", "mail"],
-    steps: ["Viết subject trước, tối đa 10 từ.", "Viết 3 bullet nội dung email trước khi viết câu hoàn chỉnh.", "Soạn đoạn mở đầu xấu cũng được, miễn là có chữ."]
+    steps: ["Viết subject trước.", "Viết 3 bullet nội dung email.", "Soạn đoạn mở đầu xấu trước."]
   },
   {
     match: ["reel", "video", "short"],
-    steps: ["Viết hook 3 giây đầu tiên.", "Gạch 3 cảnh chính, chưa cần lời thoại.", "Chọn một insight duy nhất cho video này."]
+    steps: ["Viết hook 3 giây đầu.", "Gạch 3 cảnh chính.", "Chọn một insight duy nhất."]
   },
   {
     match: ["outline", "dàn ý", "seo", "brief"],
-    steps: ["Viết 3 heading chính trước.", "Chốt intent người đọc trong một câu.", "Thêm một CTA cuối bài rồi quay lại sửa sau."]
+    steps: ["Viết 3 heading chính.", "Chốt intent trong một câu.", "Thêm CTA nháp cuối bài."]
   },
   {
     match: ["ads", "quảng cáo", "creative", "copy"],
-    steps: ["Viết một giả thuyết test trong một câu.", "Tạo 2 angle khác nhau, mỗi angle một dòng.", "Chỉ sửa headline trước, đừng động cả campaign."]
+    steps: ["Viết 1 giả thuyết test.", "Tạo 2 angle, mỗi angle một dòng.", "Chỉ sửa headline trước."]
   },
   {
     match: ["proposal", "khách", "client"],
-    steps: ["Viết vấn đề của khách trong một câu.", "Gạch 3 việc bạn sẽ làm cho khách.", "Soạn tin nhắn update ngắn trước khi mở file lớn."]
+    steps: ["Viết vấn đề của khách trong 1 câu.", "Gạch 3 việc sẽ làm.", "Soạn tin nhắn update ngắn."]
   }
 ];
 
@@ -233,6 +243,8 @@ const el = {
   heroRunStatus: document.querySelector("#heroRunStatus"),
   heroTimerDisplay: document.querySelector("#heroTimerDisplay"),
   heroCommitmentPreview: document.querySelector("#heroCommitmentPreview"),
+  heroRescueButton: document.querySelector("#heroRescueButton"),
+  heroRescueOutput: document.querySelector("#heroRescueOutput"),
   heroDurationSelect: document.querySelector("#heroDurationSelect"),
   customDurationField: document.querySelector("#customDurationField"),
   customDurationInput: document.querySelector("#customDurationInput"),
@@ -318,7 +330,7 @@ function loadState() {
     command: { ...defaultState.command, ...((saved || {}).command || {}) },
     commandLabels: { ...defaultState.commandLabels, ...((saved || {}).commandLabels || {}) },
     quotes: Array.isArray((saved || {}).quotes) && (saved || {}).quotes.length ? (saved || {}).quotes : [...defaultQuotes],
-    templates: Array.isArray((saved || {}).templates) && (saved || {}).templates.length ? (saved || {}).templates : cloneTemplates(defaultTemplates),
+    templates: mergeDefaultTemplates((saved || {}).templates),
     metrics: { ...((saved || {}).metrics || {}) },
     session: (saved || {}).session || null,
     lastDuration: (saved || {}).lastDuration || defaultState.lastDuration
@@ -357,6 +369,13 @@ function cloneTemplates(source) {
     ...template,
     tasks: [...template.tasks]
   }));
+}
+
+function mergeDefaultTemplates(savedTemplates) {
+  const saved = Array.isArray(savedTemplates) ? cloneTemplates(savedTemplates) : [];
+  const savedIds = new Set(saved.map((template) => template.id));
+  const missingDefaults = defaultTemplates.filter((template) => !savedIds.has(template.id));
+  return [...cloneTemplates(missingDefaults), ...saved];
 }
 
 function roleForSuggestions() {
@@ -501,14 +520,14 @@ function renderTemplateFeedback() {
 
     el.templateFeedback.innerHTML = `
       <strong>Chưa chọn mẫu nào.</strong>
-      <span>Bấm Bật mode CHẠY để app tự tạo 3 việc chính và cam kết đầu ra cho bạn.</span>
+      <span>Bấm Bật mode CHẠY để app tự tạo 3 bước nhỏ và cam kết đầu ra cho bạn.</span>
     `;
     return;
   }
 
   el.templateFeedback.innerHTML = `
     <strong>Đã tạo checklist từ ${template.title}.</strong>
-    <span>3 việc chính ở bên dưới đã được thay bằng workflow này.</span>
+    <span>3 bước nhỏ bên dưới đã được thay bằng đường vào việc này.</span>
     <button class="ghost-button jump-to-tasks-button" type="button">
       <span class="button-icon" aria-hidden="true">↓</span>
       Xem checklist
@@ -525,7 +544,7 @@ function renderTasks() {
   if (!state.tasks.length) {
     const empty = document.createElement("li");
     empty.className = "empty-state";
-    empty.textContent = "Thêm tối đa 3 việc chính hoặc bấm một mẫu việc để có checklist ngay.";
+    empty.textContent = "Thêm tối đa 3 bước nhỏ hoặc bấm Quick win để bắt đầu nhẹ hơn.";
     el.taskList.append(empty);
     return;
   }
@@ -572,6 +591,9 @@ function renderStats() {
     ? `+${metrics.sprints} sprint hôm nay.`
     : "Một phiên là đủ để bắt đầu.";
   el.heroCommitmentPreview.textContent = state.commitment || makeCommitment();
+  if (!el.heroRescueOutput.textContent.trim()) {
+    el.heroRescueOutput.textContent = "Mở file cần làm.";
+  }
   renderMomentumOutputs();
 }
 
@@ -762,7 +784,7 @@ function makeId() {
 
 function addTask(text, shouldRender = true) {
   if (state.tasks.length >= 3) {
-    addLog("Bạn đã có 3 việc chính. Hãy hoàn thành hoặc xóa bớt trước khi thêm việc mới.");
+    addLog("Bạn đã có 3 bước nhỏ. Hãy làm hoặc xóa bớt trước khi thêm.");
     if (shouldRender) render();
     return;
   }
@@ -821,7 +843,7 @@ function updateStreakIfNeeded() {
   const yesterdayKey = getDateKey(yesterday);
   state.streak = state.lastCompletedDate === yesterdayKey ? state.streak + 1 : 1;
   state.lastCompletedDate = TODAY;
-  addLog("Bạn đã hoàn thành 3 việc chính hôm nay. Ngày này có bằng chứng rồi.");
+  addLog("Bạn đã hoàn thành 3 bước nhỏ hôm nay. Ngày này có bằng chứng rồi.");
 }
 
 function setEnergy(energy) {
@@ -1362,8 +1384,7 @@ function makeContextualRescueStep() {
 
   const activeTask = state.tasks.find((task) => !task.done) || state.tasks[0];
   if (activeTask?.text) {
-    const taskText = activeTask.text.toLowerCase();
-    return `Làm bản xấu của việc này trong 5 phút: ${taskText}. Chỉ cần có chữ hoặc gạch đầu dòng.`;
+    return `Làm 5 phút đầu: ${activeTask.text}.`;
   }
 
   return rescueSteps[Math.floor(Math.random() * rescueSteps.length)];
@@ -1378,8 +1399,10 @@ function rescue() {
     state.commitment = step;
   }
   el.rescueOutput.textContent = step;
+  el.heroRescueOutput.textContent = step;
   saveAndRender();
   el.rescueOutput.textContent = step;
+  el.heroRescueOutput.textContent = step;
   syncFocusView();
 }
 
@@ -1482,6 +1505,7 @@ el.focusToggleButton.addEventListener("click", toggleTimer);
 el.timerResetButton.addEventListener("click", resetTimer);
 el.focusModeButton.addEventListener("click", () => toggleFocusMode(true));
 el.closeFocusButton.addEventListener("click", () => toggleFocusMode(false));
+el.heroRescueButton.addEventListener("click", rescue);
 el.rescueButton.addEventListener("click", rescue);
 el.focusRescueButton.addEventListener("click", rescue);
 el.completeDoneButton.addEventListener("click", () => finishSession("Đã xong."));
