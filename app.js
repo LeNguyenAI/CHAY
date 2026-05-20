@@ -1046,11 +1046,13 @@ function completeSession() {
     document.body.classList.remove("session-completing");
     el.focusTimerDisplay.classList.remove("timer-freeze");
     el.completionView.classList.add("reward-pulse");
+    el.completionView.classList.remove("actions-ready");
     playChime();
     saveState();
     toggleFocusMode(true);
     updateTimerDisplay();
     updateTimerButtons();
+    window.setTimeout(() => el.completionView.classList.add("actions-ready"), 720);
     window.setTimeout(() => el.completionView.classList.remove("reward-pulse"), 900);
   }, 420);
 }
@@ -1067,6 +1069,8 @@ function finishSession(resultText) {
   timer.duration = (state.lastDuration || durationMinutes || 25) * 60;
   timer.remaining = timer.duration;
   updateStreakFromSprint();
+  document.body.classList.add("momentum-spark");
+  window.setTimeout(() => document.body.classList.remove("momentum-spark"), 1200);
   saveState();
   toggleFocusMode(false);
   saveAndRender();
@@ -1182,6 +1186,15 @@ function syncFocusView() {
   const completed = isSessionCompleted();
   el.focusSessionView.hidden = completed;
   el.completionView.hidden = !completed;
+  if (!completed) {
+    el.completionView.classList.remove("actions-ready");
+    return;
+  }
+
+  const completedAt = state.session?.completedAt ? new Date(state.session.completedAt).getTime() : 0;
+  if (completedAt && Date.now() - completedAt > 900) {
+    el.completionView.classList.add("actions-ready");
+  }
 }
 
 function toggleFocusMode(show) {
@@ -1189,6 +1202,12 @@ function toggleFocusMode(show) {
   el.focusOverlay.classList.toggle("show", show);
   el.focusOverlay.setAttribute("aria-hidden", show ? "false" : "true");
   document.body.classList.toggle("run-mode-open", show);
+  if (show) {
+    document.body.classList.add("run-mode-entering");
+    window.setTimeout(() => document.body.classList.remove("run-mode-entering"), 640);
+  } else {
+    document.body.classList.remove("run-mode-entering");
+  }
 }
 
 function toggleSettings(show) {
@@ -1468,6 +1487,22 @@ el.focusRescueButton.addEventListener("click", rescue);
 el.completeDoneButton.addEventListener("click", () => finishSession("Đã xong."));
 el.completeProgressButton.addEventListener("click", () => finishSession("Chưa xong nhưng đã tiến lên."));
 el.extendSessionButton.addEventListener("click", () => extendSession(10));
+
+document.addEventListener("pointerdown", (event) => {
+  const target = event.target.closest("button, .template-card");
+  if (!target) return;
+  target.classList.add("is-pressing");
+});
+
+document.addEventListener("pointerup", (event) => {
+  const target = event.target.closest("button, .template-card");
+  if (!target) return;
+  window.setTimeout(() => target.classList.remove("is-pressing"), 120);
+});
+
+document.addEventListener("pointercancel", () => {
+  document.querySelectorAll(".is-pressing").forEach((target) => target.classList.remove("is-pressing"));
+});
 
 el.saveCommitmentButton.addEventListener("click", () => {
   state.commitment = el.commitmentInput.value.trim();

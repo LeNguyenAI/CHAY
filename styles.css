@@ -2576,3 +2576,327 @@ textarea {
     margin: 14px 0;
   }
 }
+
+/* Microinteraction pass: grounded motion, tactile feedback, emotional acknowledgement. */
+.primary-button,
+.ghost-button,
+.icon-button,
+.energy-button,
+.template-card,
+.task-item,
+.hero-run-card,
+.side-panel,
+.tool-panel,
+.daily-loop div,
+.review-grid div,
+.history-day {
+  will-change: transform, box-shadow, border-color, background;
+}
+
+.primary-button,
+.ghost-button,
+.icon-button,
+.energy-button,
+.template-card,
+.rescue-button,
+.delete-task {
+  transform-origin: center;
+  transition:
+    transform 0.18s var(--ease-out),
+    border-color 0.22s var(--ease-soft),
+    background 0.22s var(--ease-soft),
+    box-shadow 0.22s var(--ease-soft),
+    color 0.22s var(--ease-soft),
+    opacity 0.22s var(--ease-soft);
+}
+
+.primary-button:active,
+.ghost-button:active,
+.icon-button:active,
+.energy-button:active,
+.template-card:active,
+.rescue-button:active,
+.is-pressing {
+  transform: translateY(1px) scale(0.985);
+}
+
+.hero-run-card {
+  transition:
+    transform 0.34s var(--ease-out),
+    border-color 0.34s var(--ease-soft),
+    box-shadow 0.34s var(--ease-soft),
+    background 0.34s var(--ease-soft);
+}
+
+.hero-run-card.session-active {
+  animation: run-card-alive 3.4s ease-in-out infinite;
+}
+
+.hero-run-card.session-active .hero-run-time,
+.focus-time {
+  text-shadow: 0 0 24px rgba(199, 255, 77, 0.12);
+}
+
+.focus-overlay {
+  background:
+    radial-gradient(circle at 50% 20%, rgba(199, 255, 77, 0.2), transparent 34%),
+    rgba(7, 9, 8, 0.98);
+  backdrop-filter: blur(14px);
+}
+
+.focus-overlay.show .focus-session-view {
+  animation: focus-land 0.52s var(--ease-out) both;
+}
+
+body.run-mode-entering .focus-time {
+  animation: timer-enter 0.58s var(--ease-out) both, timer-breathe 2.8s ease-in-out 0.58s infinite;
+}
+
+body.run-mode-open .app-shell {
+  opacity: 0.22;
+  transform: scale(0.988);
+  filter: saturate(0.74) blur(1px);
+}
+
+.focus-time.timer-freeze {
+  animation: timer-complete-freeze 0.58s var(--ease-out) both;
+}
+
+.completion-view {
+  gap: 16px;
+}
+
+.completion-view.reward-pulse {
+  animation: completion-land 0.9s var(--ease-out) both;
+}
+
+.completion-view .completion-reward,
+.completion-view .completion-stats,
+.completion-view .return-copy,
+.completion-view #completionCommitmentText {
+  animation: completion-item-in 0.58s var(--ease-out) both;
+}
+
+.completion-view .completion-stats {
+  animation-delay: 0.12s;
+}
+
+.completion-view .return-copy {
+  animation-delay: 0.2s;
+}
+
+.completion-view #completionCommitmentText {
+  animation-delay: 0.28s;
+}
+
+.completion-actions {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.38s var(--ease-soft), transform 0.38s var(--ease-out);
+}
+
+.completion-view.actions-ready .completion-actions {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.completion-stats strong {
+  position: relative;
+  overflow: hidden;
+}
+
+.completion-stats strong::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.38) 48%, transparent 68%);
+  transform: translateX(-130%);
+  animation: soft-sheen 1.15s ease 0.22s both;
+}
+
+.momentum-score div:first-child strong {
+  position: relative;
+  display: inline-block;
+  animation: ember-breathe 3.2s ease-in-out infinite;
+}
+
+body.momentum-spark .momentum-score strong,
+body.momentum-spark .hero-run-card .daily-loop strong {
+  animation: momentum-pop 0.72s var(--ease-out) both;
+}
+
+.momentum-output-list li:not(.empty-state),
+.history-items li.output-log {
+  transition: transform 0.22s var(--ease-out), border-color 0.22s var(--ease-soft), background 0.22s var(--ease-soft);
+}
+
+.momentum-output-list li:not(.empty-state):hover,
+.history-items li.output-log:hover {
+  transform: translateX(2px);
+  border-color: rgba(199, 255, 77, 0.38);
+  background: rgba(199, 255, 77, 0.085);
+}
+
+.tool-panel,
+.side-panel,
+.checkin-band,
+.template-card,
+.task-item,
+.history-day {
+  transition:
+    transform 0.24s var(--ease-out),
+    border-color 0.24s var(--ease-soft),
+    background 0.24s var(--ease-soft),
+    box-shadow 0.24s var(--ease-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .template-card:hover,
+  .task-item:hover,
+  .history-day:hover,
+  .review-grid div:hover,
+  .daily-loop div:hover {
+    transform: translateY(-2px);
+    border-color: rgba(199, 255, 77, 0.32);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28), 0 0 22px rgba(199, 255, 77, 0.045);
+  }
+
+  .hero-run-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 34px 96px rgba(0, 0, 0, 0.54), 0 0 54px rgba(199, 255, 77, 0.18);
+  }
+}
+
+@keyframes focus-land {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.982);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes timer-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  62% {
+    opacity: 1;
+    transform: scale(1.025);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes timer-complete-freeze {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.035);
+    filter: brightness(1.18);
+  }
+  100% {
+    transform: scale(0.985);
+    filter: brightness(1);
+  }
+}
+
+@keyframes completion-land {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.965);
+    filter: drop-shadow(0 0 0 rgba(199, 255, 77, 0));
+  }
+  42% {
+    opacity: 1;
+    transform: translateY(0) scale(1.018);
+    filter: drop-shadow(0 0 38px rgba(199, 255, 77, 0.22));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 14px rgba(199, 255, 77, 0.1));
+  }
+}
+
+@keyframes completion-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-sheen {
+  to {
+    transform: translateX(130%);
+  }
+}
+
+@keyframes ember-breathe {
+  0%,
+  100% {
+    text-shadow: 0 0 16px rgba(199, 255, 77, 0.28);
+  }
+  50% {
+    text-shadow: 0 0 28px rgba(199, 255, 77, 0.48);
+  }
+}
+
+@keyframes momentum-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes run-card-alive {
+  0%,
+  100% {
+    box-shadow: 0 32px 90px rgba(0, 0, 0, 0.52), 0 0 42px rgba(199, 255, 77, 0.12);
+  }
+  50% {
+    box-shadow: 0 32px 90px rgba(0, 0, 0, 0.52), 0 0 54px rgba(199, 255, 77, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-run-card.session-active,
+  .focus-overlay.show .focus-session-view,
+  body.run-mode-entering .focus-time,
+  .completion-view.reward-pulse,
+  .completion-view .completion-reward,
+  .completion-view .completion-stats,
+  .completion-view .return-copy,
+  .completion-view #completionCommitmentText,
+  .completion-stats strong::after,
+  .momentum-score div:first-child strong,
+  body.momentum-spark .momentum-score strong,
+  body.momentum-spark .hero-run-card .daily-loop strong {
+    animation: none !important;
+  }
+
+  .completion-actions {
+    opacity: 1;
+    transform: none;
+  }
+}
