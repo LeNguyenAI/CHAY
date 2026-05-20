@@ -1855,9 +1855,81 @@ select:focus-visible {
     bottom: calc(82px + env(safe-area-inset-bottom));
   }
 
-  .guide-help-button {
+.guide-help-button {
     top: 16px;
     right: 16px;
     bottom: auto;
+  }
+}
+
+.onboarding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.daily-loop {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.daily-loop div {
+  min-height: 74px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  padding: 12px;
+  border: 1px solid rgba(199, 255, 77, 0.22);
+  border-radius: 8px;
+  background: rgba(199, 255, 77, 0.055);
+}
+
+.daily-loop strong {
+  color: var(--white);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.daily-loop span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.run-mode-console .ghost-button,
+.task-form .ghost-button {
+  min-height: 42px;
+}
+
+.rescue-button {
+  color: var(--ink);
+  background: #101412;
+  border-color: rgba(199, 255, 77, 0.28);
+  box-shadow: none;
+}
+
+.rescue-button:hover {
+  color: var(--orange);
+  background: #101412;
+  border-color: var(--orange);
+}
+
+.focus-overlay .primary-button {
+  background: var(--orange);
+  border-color: var(--orange);
+}
+
+@media (max-width: 620px) {
+  .onboarding-actions,
+  .onboarding-actions .primary-button,
+  .onboarding-actions .ghost-button {
+    width: 100%;
+  }
+
+  .daily-loop {
+    margin: 14px 0;
   }
 }

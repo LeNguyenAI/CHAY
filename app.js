@@ -39,6 +39,48 @@ const nudges = {
   sharp: "Dùng phiên đầu cho việc có lực nhất: concept, hook, proposal, strategy hoặc phần khách hàng sẽ thấy."
 };
 
+const energyTaskPrefix = {
+  low: "Bản tối giản:",
+  steady: "Hoàn thành:",
+  sharp: "Đẩy mạnh:"
+};
+
+const smartTaskMap = {
+  content: [
+    "Chốt một insight hoặc angle chính",
+    "Viết 5 hook có thể dùng ngay",
+    "Soạn bản nháp đầu tiên để sửa tiếp"
+  ],
+  ads: [
+    "Chọn một chỉ số đang cần tối ưu",
+    "Viết một giả thuyết test rõ ràng",
+    "Tạo 2 biến thể copy hoặc creative"
+  ],
+  seo: [
+    "Chốt keyword và intent chính",
+    "Lập outline H2/H3 đủ để viết",
+    "Thêm CTA và 3 internal link cần dùng"
+  ],
+  strategy: [
+    "Viết vấn đề chính của khách trong 1 câu",
+    "Phác 3 hướng xử lý có thể trình bày",
+    "Chốt next step khách cần thấy hôm nay"
+  ],
+  email: [
+    "Chọn segment và mục tiêu email",
+    "Viết subject + preview text",
+    "Soạn bản nháp email đầu tiên"
+  ]
+};
+
+const outputNouns = {
+  content: "bản nháp nội dung đầu tiên",
+  ads: "một giả thuyết test kèm 2 biến thể quảng cáo",
+  seo: "outline SEO có thể bắt đầu viết",
+  strategy: "hướng chiến lược đủ rõ để gửi hoặc trình bày",
+  email: "bản nháp email có subject và nội dung chính"
+};
+
 const defaultTemplates = [
   {
     id: "content",
@@ -147,12 +189,18 @@ const el = {
   goalSelect: document.querySelector("#goalSelect"),
   rhythmSelect: document.querySelector("#rhythmSelect"),
   finishOnboardingButton: document.querySelector("#finishOnboardingButton"),
+  skipOnboardingButton: document.querySelector("#skipOnboardingButton"),
   editProfileButton: document.querySelector("#editProfileButton"),
   openSettingsButton: document.querySelector("#openSettingsButton"),
   profileChip: document.querySelector("#profileChip"),
   todayLabel: document.querySelector("#todayLabel"),
   focusScore: document.querySelector("#focusScore"),
   streakDays: document.querySelector("#streakDays"),
+  todayProgressText: document.querySelector("#todayProgressText"),
+  heroProgress: document.querySelector("#heroProgress"),
+  heroSprints: document.querySelector("#heroSprints"),
+  heroRunStatus: document.querySelector("#heroRunStatus"),
+  heroCommitmentPreview: document.querySelector("#heroCommitmentPreview"),
   dailyQuote: document.querySelector("#dailyQuote"),
   newQuoteButton: document.querySelector("#newQuoteButton"),
   startDayButton: document.querySelector("#startDayButton"),
@@ -258,6 +306,47 @@ function cloneTemplates(source) {
   }));
 }
 
+function roleForSuggestions() {
+  return smartTaskMap[state.profile.role] ? state.profile.role : "content";
+}
+
+function getSmartTasks(role = roleForSuggestions(), energy = state.energy) {
+  const baseTasks = smartTaskMap[role] || smartTaskMap.content;
+  if (energy === "steady") return [...baseTasks];
+
+  return baseTasks.map((task, index) => {
+    if (energy === "low" && index === 0) return `${energyTaskPrefix.low} ${task.toLowerCase()}`;
+    if (energy === "sharp" && index === 2) return `${energyTaskPrefix.sharp} ${task.toLowerCase()}`;
+    return task;
+  });
+}
+
+function makeCommitment(role = roleForSuggestions(), energy = state.energy) {
+  const output = outputNouns[role] || outputNouns.content;
+  const pace = energy === "low"
+    ? "bản nhỏ nhất có thể sửa tiếp"
+    : energy === "sharp"
+      ? "bản đủ lực để gửi feedback hoặc triển khai ngay"
+      : "bản rõ ràng để tiếp tục hoặc gửi feedback";
+  return `Cuối phiên này tôi sẽ có ${output}: ${pace}.`;
+}
+
+function applySmartPlan(options = {}) {
+  const { overwrite = false, log = true } = options;
+  if (!overwrite && (state.tasks.length || state.commitment)) return;
+
+  const role = roleForSuggestions();
+  state.selectedTemplate = "";
+  state.tasks = getSmartTasks(role).map((task) => ({
+    id: makeId(),
+    text: task,
+    done: false
+  }));
+  state.commitment = makeCommitment(role);
+
+  if (log) addLog(`CHẠY đã gợi ý 3 bước nhỏ cho ${roleLabels[role]}.`);
+}
+
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
@@ -348,9 +437,17 @@ function renderTemplates() {
 function renderTemplateFeedback() {
   const template = state.templates.find((item) => item.id === state.selectedTemplate);
   if (!template) {
+    if (state.tasks.length) {
+      el.templateFeedback.innerHTML = `
+        <strong>Đã có gợi ý theo hồ sơ của bạn.</strong>
+        <span>3 bước nhỏ bên dưới được tạo từ kiểu việc ${roleLabels[roleForSuggestions()]} và mức năng lượng hiện tại.</span>
+      `;
+      return;
+    }
+
     el.templateFeedback.innerHTML = `
       <strong>Chưa chọn mẫu nào.</strong>
-      <span>Bấm một mẫu để CHẠY tạo 3 việc chính và cam kết đầu ra cho bạn.</span>
+      <span>Bấm Bật mode CHẠY để app tự tạo 3 việc chính và cam kết đầu ra cho bạn.</span>
     `;
     return;
   }
@@ -410,8 +507,18 @@ function renderStats() {
   const completed = state.tasks.filter((task) => task.done).length;
   const total = Math.max(state.tasks.length, 3);
   const score = Math.round((completed / total) * 100);
+  const metrics = todayMetrics();
   el.focusScore.textContent = `${score}%`;
   el.streakDays.textContent = String(state.streak || 0);
+  el.heroProgress.textContent = `${completed}/${total}`;
+  el.heroSprints.textContent = String(metrics.sprints || 0);
+  el.heroRunStatus.textContent = metrics.sprints
+    ? "Đã có bằng chứng hôm nay"
+    : "Sẵn sàng trong 1 click";
+  el.todayProgressText.textContent = metrics.sprints
+    ? `Hôm nay đã có ${metrics.sprints} sprint. Mai chỉ cần quay lại và bật tiếp.`
+    : "Bắt đầu một sprint là ngày hôm nay đã có bằng chứng.";
+  el.heroCommitmentPreview.textContent = state.commitment || makeCommitment();
 }
 
 function renderWeeklyReview() {
@@ -468,9 +575,12 @@ function getWeeklySummary() {
   const topEnergy = hasEnergyData
     ? Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
     : state.energy;
+  const todaySprint = state.metrics[TODAY]?.sprints || 0;
   const insight = sprints === 0
     ? "Tuần này chưa có phiên tập trung nào. Bắt đầu bằng 15 phút là đủ để tạo dữ liệu đầu tiên."
-    : `Bạn đã có ${sprints} phiên tập trung trong 7 ngày gần nhất. Phiên tiếp theo nên gắn với một đầu ra có thể bàn giao.`;
+    : todaySprint
+      ? `Hôm nay đã có ${todaySprint} sprint. Đóng phiên gọn, mai quay lại bật CHẠY tiếp.`
+      : `Bạn đã có ${sprints} sprint trong 7 ngày gần nhất. Hôm nay chỉ cần thêm một phiên ngắn để giữ nhịp.`;
 
   return {
     sprints,
@@ -578,12 +688,18 @@ function saveProfile() {
     goal: el.goalSelect.value,
     rhythm: el.rhythmSelect.value
   };
-  state.selectedTemplate = state.profile.role;
-  if (!state.tasks.length) {
-    const templateId = state.profile.role === "content" ? "content" : state.profile.role;
-    applyTemplate(templateId, { scrollToTasks: false });
-  }
+  applySmartPlan({ overwrite: true, log: false });
   addLog(`Đã thiết lập hồ sơ cho ${roleLabels[state.profile.role]}.`);
+  saveAndRender();
+}
+
+function skipOnboarding() {
+  state.profile = {
+    ...state.profile,
+    onboarded: true
+  };
+  applySmartPlan({ overwrite: true, log: false });
+  addLog("Đã dùng thiết lập mặc định. Có 3 bước nhỏ sẵn để bắt đầu.");
   saveAndRender();
 }
 
@@ -616,7 +732,7 @@ function toggleTimer() {
 function completeSprint() {
   stopTimer("Đã xong");
   todayMetrics().sprints += 1;
-  addLog(`Hoàn thành một sprint ${Math.round(timer.duration / 60)} phút.`);
+  addLog(`Hoàn thành một sprint ${Math.round(timer.duration / 60)} phút. Đóng phiên gọn, mai quay lại bật CHẠY tiếp.`);
   playChime();
   saveAndRender();
 }
@@ -770,15 +886,11 @@ function resetSettings() {
 
 function activateRunMode() {
   if (!state.tasks.length) {
-    const templateId = state.profile.role === "content" ? "content" : state.profile.role;
-    applyTemplate(templateId);
+    applySmartPlan({ overwrite: true });
   }
 
   if (!state.commitment) {
-    const firstTask = state.tasks.find((task) => !task.done);
-    state.commitment = firstTask
-      ? `Cuối phiên tôi sẽ có: ${firstTask.text.toLowerCase()}.`
-      : "Cuối phiên tôi sẽ có một đầu ra nhỏ có thể bàn giao hoặc xin feedback.";
+    state.commitment = makeCommitment();
   }
 
   addLog("Đã bật RUN MODE: mở màn hình tập trung, chuẩn bị checklist và bắt đầu phiên chạy việc.");
@@ -792,7 +904,9 @@ function activateRunMode() {
 }
 
 function rescue() {
-  const step = rescueSteps[Math.floor(Math.random() * rescueSteps.length)];
+  const smartSteps = getSmartTasks().map((task) => `Làm bản nhỏ nhất của việc này: ${task.toLowerCase()}.`);
+  const pool = [...smartSteps, ...rescueSteps];
+  const step = pool[Math.floor(Math.random() * pool.length)];
   addLog(`Bước nhỏ: ${step}`);
   state.commitment = step;
   el.rescueOutput.textContent = step;
@@ -852,6 +966,7 @@ el.startDayButton.addEventListener("click", () => {
 
 el.saveCommandButton.addEventListener("click", saveCommandCenter);
 el.finishOnboardingButton.addEventListener("click", saveProfile);
+el.skipOnboardingButton.addEventListener("click", skipOnboarding);
 el.editProfileButton.addEventListener("click", () => toggleOnboarding(true));
 el.openSettingsButton.addEventListener("click", () => toggleSettings(true));
 el.closeSettingsButton.addEventListener("click", () => toggleSettings(false));
