@@ -481,9 +481,9 @@
           <article class="tool-panel log-panel reveal">
             <div class="section-heading">
               <div>
-                <p class="panel-label">Lịch sử hôm nay</p>
-                <h3>Những lần bạn đã thật sự bắt tay vào việc</h3>
-                <p class="feature-note">Ghi lại lúc bắt đầu, lưu cam kết, hoàn thành sprint và tick xong việc.</p>
+                <p class="panel-label">Output hôm nay</p>
+                <h3>Bằng chứng là những thứ bạn đã tạo ra</h3>
+                <p class="feature-note">Mỗi phiên hoàn thành sẽ để lại một dòng output: bản nháp, outline, email, reel, proposal...</p>
               </div>
             </div>
             <ul class="activity-log" id="activityLog"></ul>
@@ -529,8 +529,13 @@
       </div>
       <div class="completion-view" id="completionView" hidden>
         <p class="eyebrow">RUN MODE</p>
-        <h2>Phiên hoàn thành. M đã tạo ra gì?</h2>
-        <p id="completionCommitmentText">Ghi nhận phiên này để giữ nhịp hôm nay.</p>
+        <h2>Phiên hoàn thành.</h2>
+        <p class="completion-reward">M đã giữ nhịp.</p>
+        <div class="completion-stats" aria-label="Kết quả phiên vừa xong">
+          <strong id="completionSprintReward">+1 sprint hôm nay</strong>
+          <strong id="completionStreakReward">Giữ nhịp hôm nay</strong>
+        </div>
+        <p id="completionCommitmentText">M đã tạo ra gì?</p>
         <div class="completion-actions">
           <button class="primary-button" id="completeDoneButton" type="button">
             <span class="button-icon" aria-hidden="true">✓</span>

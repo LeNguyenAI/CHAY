@@ -141,6 +141,33 @@ const rescueSteps = [
   "Tự hứa: cuối phiên này mình chỉ cần có bản nháp để sửa tiếp."
 ];
 
+const contextualStepRules = [
+  {
+    match: ["landing", "page", "trang"],
+    steps: ["Viết headline trước. Chỉ cần một câu rõ lợi ích.", "Viết 3 bullet đầu tiên, chưa cần đẹp.", "Phác CTA cuối trang trong một dòng."]
+  },
+  {
+    match: ["email", "mail"],
+    steps: ["Viết subject trước, tối đa 10 từ.", "Viết 3 bullet nội dung email trước khi viết câu hoàn chỉnh.", "Soạn đoạn mở đầu xấu cũng được, miễn là có chữ."]
+  },
+  {
+    match: ["reel", "video", "short"],
+    steps: ["Viết hook 3 giây đầu tiên.", "Gạch 3 cảnh chính, chưa cần lời thoại.", "Chọn một insight duy nhất cho video này."]
+  },
+  {
+    match: ["outline", "dàn ý", "seo", "brief"],
+    steps: ["Viết 3 heading chính trước.", "Chốt intent người đọc trong một câu.", "Thêm một CTA cuối bài rồi quay lại sửa sau."]
+  },
+  {
+    match: ["ads", "quảng cáo", "creative", "copy"],
+    steps: ["Viết một giả thuyết test trong một câu.", "Tạo 2 angle khác nhau, mỗi angle một dòng.", "Chỉ sửa headline trước, đừng động cả campaign."]
+  },
+  {
+    match: ["proposal", "khách", "client"],
+    steps: ["Viết vấn đề của khách trong một câu.", "Gạch 3 việc bạn sẽ làm cho khách.", "Soạn tin nhắn update ngắn trước khi mở file lớn."]
+  }
+];
+
 const defaultState = {
   date: TODAY,
   tasks: [],
@@ -252,6 +279,8 @@ const el = {
   focusToggleButton: document.querySelector("#focusToggleButton"),
   focusRescueButton: document.querySelector("#focusRescueButton"),
   completionCommitmentText: document.querySelector("#completionCommitmentText"),
+  completionSprintReward: document.querySelector("#completionSprintReward"),
+  completionStreakReward: document.querySelector("#completionStreakReward"),
   completeDoneButton: document.querySelector("#completeDoneButton"),
   completeProgressButton: document.querySelector("#completeProgressButton"),
   extendSessionButton: document.querySelector("#extendSessionButton"),
@@ -555,13 +584,14 @@ function renderLog() {
   if (!state.logs.length) {
     const empty = document.createElement("li");
     empty.className = "empty-state";
-    empty.textContent = "Mỗi lần bạn bắt đầu ca, lưu cam kết hoặc hoàn thành sprint, tiến độ sẽ nằm ở đây.";
+    empty.textContent = "Output hôm nay sẽ nằm ở đây: bản nháp, outline, email, reel, proposal...";
     el.activityLog.append(empty);
     return;
   }
 
   state.logs.slice(0, 7).forEach((log) => {
     const item = document.createElement("li");
+    if (log.type === "output") item.className = "output-log";
     const time = document.createElement("time");
     time.dateTime = log.at;
     time.textContent = new Intl.DateTimeFormat("vi-VN", {
@@ -612,6 +642,11 @@ function getWeeklySummary() {
 
 function addLog(text) {
   state.logs = [{ at: new Date().toISOString(), text }, ...state.logs].slice(0, 16);
+  saveState();
+}
+
+function addOutputLog(text) {
+  state.logs = [{ at: new Date().toISOString(), text, type: "output" }, ...state.logs].slice(0, 16);
   saveState();
 }
 
@@ -891,22 +926,37 @@ function getRemainingSeconds() {
 
 function completeSession() {
   if (!state.session || state.session.status === "completed") return;
-  state.session.status = "completed";
-  state.session.remaining = 0;
-  state.session.completedAt = new Date().toISOString();
   clearSessionTicker();
-  playChime();
-  saveState();
-  toggleFocusMode(true);
+  state.session.remaining = 0;
   updateTimerDisplay();
   updateTimerButtons();
+  document.body.classList.add("session-completing");
+  el.focusTimerDisplay.classList.add("timer-freeze");
+
+  window.setTimeout(() => {
+    if (!state.session || state.session.status === "completed") return;
+    state.session.status = "completed";
+    state.session.remaining = 0;
+    state.session.completedAt = new Date().toISOString();
+    document.body.classList.remove("session-completing");
+    el.focusTimerDisplay.classList.remove("timer-freeze");
+    el.completionView.classList.add("reward-pulse");
+    playChime();
+    saveState();
+    toggleFocusMode(true);
+    updateTimerDisplay();
+    updateTimerButtons();
+    window.setTimeout(() => el.completionView.classList.remove("reward-pulse"), 900);
+  }, 420);
 }
 
 function finishSession(resultText) {
   if (!state.session) return;
   const durationMinutes = Math.round((state.session.duration || timer.duration) / 60);
   todayMetrics().sprints += 1;
+  const output = cleanCommitmentText(state.session.commitment || state.commitment);
   addLog(`${resultText} Sprint ${durationMinutes} phút đã được ghi nhận. Mai quay lại bật CHẠY tiếp.`);
+  addOutputLog(`✓ ${output}`);
   state.session = null;
   timer.running = false;
   timer.duration = (state.lastDuration || durationMinutes || 25) * 60;
@@ -1013,8 +1063,14 @@ function cleanCommitmentText(text) {
 
 function syncFocusView() {
   const commitment = cleanCommitmentText(state.session?.commitment || state.commitment);
-  el.focusCommitmentText.textContent = `Cuối phiên tôi sẽ có: ${commitment}`;
-  el.completionCommitmentText.textContent = `Mục tiêu phiên này: ${commitment}`;
+  el.focusCommitmentText.textContent = state.session?.lastRescueStep
+    ? `Bước nhỏ ngay: ${state.session.lastRescueStep}`
+    : `Cuối phiên tôi sẽ có: ${commitment}`;
+  const nextSprintCount = (todayMetrics().sprints || 0) + 1;
+  const nextStreak = state.lastCompletedDate === TODAY ? state.streak : Math.max(1, state.streak + 1);
+  el.completionSprintReward.textContent = `+1 sprint hôm nay (${nextSprintCount})`;
+  el.completionStreakReward.textContent = nextStreak > 1 ? `${nextStreak} ngày liên tiếp` : "Giữ nhịp hôm nay";
+  el.completionCommitmentText.textContent = `M đã tạo ra gì từ mục tiêu: ${commitment}?`;
   const completed = isSessionCompleted();
   el.focusSessionView.hidden = completed;
   el.completionView.hidden = !completed;
@@ -1024,6 +1080,7 @@ function toggleFocusMode(show) {
   syncFocusView();
   el.focusOverlay.classList.toggle("show", show);
   el.focusOverlay.setAttribute("aria-hidden", show ? "false" : "true");
+  document.body.classList.toggle("run-mode-open", show);
 }
 
 function toggleSettings(show) {
@@ -1154,15 +1211,49 @@ function activateRunMode() {
   toggleFocusMode(true);
 }
 
+function currentActionContext() {
+  const activeTask = state.tasks.find((task) => !task.done) || state.tasks[0];
+  return [
+    activeTask?.text,
+    state.session?.commitment,
+    state.commitment,
+    state.command.delivery,
+    state.command.asset,
+    state.command.money
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+function makeContextualRescueStep() {
+  const context = currentActionContext();
+  const matchedRule = contextualStepRules.find((rule) =>
+    rule.match.some((keyword) => context.includes(keyword))
+  );
+
+  if (matchedRule) {
+    return matchedRule.steps[Math.floor(Math.random() * matchedRule.steps.length)];
+  }
+
+  const activeTask = state.tasks.find((task) => !task.done) || state.tasks[0];
+  if (activeTask?.text) {
+    const taskText = activeTask.text.toLowerCase();
+    return `Làm bản xấu của việc này trong 5 phút: ${taskText}. Chỉ cần có chữ hoặc gạch đầu dòng.`;
+  }
+
+  return rescueSteps[Math.floor(Math.random() * rescueSteps.length)];
+}
+
 function rescue() {
-  const smartSteps = getSmartTasks().map((task) => `Làm bản nhỏ nhất của việc này: ${task.toLowerCase()}.`);
-  const pool = [...smartSteps, ...rescueSteps];
-  const step = pool[Math.floor(Math.random() * pool.length)];
+  const step = makeContextualRescueStep();
   addLog(`Bước nhỏ: ${step}`);
-  state.commitment = step;
+  if (state.session) {
+    state.session.lastRescueStep = step;
+  } else {
+    state.commitment = step;
+  }
   el.rescueOutput.textContent = step;
   saveAndRender();
   el.rescueOutput.textContent = step;
+  syncFocusView();
 }
 
 function playChime() {

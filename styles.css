@@ -912,6 +912,11 @@ select:focus {
   line-height: 1.42;
 }
 
+.activity-log li.output-log {
+  border-left-color: var(--white);
+  background: rgba(199, 255, 77, 0.08);
+}
+
 .activity-log time {
   display: block;
   margin-bottom: 4px;
@@ -968,10 +973,15 @@ select:focus {
   background:
     radial-gradient(circle at 50% 18%, rgba(184, 255, 31, 0.22), transparent 30%),
     #070908;
+  opacity: 0;
+  transform: scale(1.015);
+  transition: opacity 0.34s var(--ease-soft), transform 0.34s var(--ease-soft);
 }
 
 .focus-overlay.show {
   display: grid;
+  opacity: 1;
+  transform: scale(1);
 }
 
 .focus-session-view,
@@ -979,6 +989,7 @@ select:focus {
   display: grid;
   justify-items: center;
   gap: 18px;
+  animation: focus-content-in 0.42s var(--ease-out) both;
 }
 
 .focus-session-view[hidden],
@@ -1002,6 +1013,11 @@ select:focus {
   font-size: 5rem;
   font-weight: 900;
   line-height: 1;
+  animation: timer-breathe 2.8s ease-in-out infinite;
+}
+
+.focus-time.timer-freeze {
+  animation: timer-freeze 0.42s var(--ease-out) both;
 }
 
 .focus-overlay p:not(.eyebrow) {
@@ -1016,6 +1032,44 @@ select:focus {
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
+}
+
+.completion-reward {
+  color: var(--ink);
+  font-size: 1.2rem;
+  font-weight: 850;
+}
+
+.completion-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.completion-stats strong {
+  padding: 10px 12px;
+  color: var(--black);
+  background: var(--orange);
+  border-radius: 8px;
+  box-shadow: 0 0 28px rgba(199, 255, 77, 0.24);
+}
+
+.completion-view.reward-pulse {
+  animation: reward-pulse 0.8s var(--ease-out) both;
+}
+
+body.run-mode-open .app-shell {
+  opacity: 0.28;
+  transform: scale(0.992);
+  filter: saturate(0.8);
+  transition: opacity 0.34s var(--ease-soft), transform 0.34s var(--ease-soft), filter 0.34s var(--ease-soft);
+}
+
+body.session-completing .focus-overlay {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(199, 255, 77, 0.32), transparent 30%),
+    #070908;
 }
 
 .focus-close {
@@ -1490,6 +1544,53 @@ select:focus {
   50% {
     opacity: 0.82;
     transform: scale(1.04);
+  }
+}
+
+@keyframes focus-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes timer-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.018);
+  }
+}
+
+@keyframes timer-freeze {
+  0% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes reward-pulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+    filter: drop-shadow(0 0 0 rgba(199, 255, 77, 0));
+  }
+  45% {
+    transform: scale(1.025);
+    filter: drop-shadow(0 0 34px rgba(199, 255, 77, 0.28));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 12px rgba(199, 255, 77, 0.14));
   }
 }
 
