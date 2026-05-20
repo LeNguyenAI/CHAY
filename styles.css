@@ -3329,3 +3329,14 @@ body.momentum-spark .hero-run-card .daily-loop strong {
     display: none;
   }
 }
+
+@media (min-width: 981px) {
+  .checkin-band {
+    align-items: end;
+  }
+
+  .nudge-box {
+    align-self: end;
+    min-height: 42px;
+  }
+}
