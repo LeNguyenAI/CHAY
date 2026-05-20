@@ -200,7 +200,11 @@ const el = {
   heroProgress: document.querySelector("#heroProgress"),
   heroSprints: document.querySelector("#heroSprints"),
   heroRunStatus: document.querySelector("#heroRunStatus"),
+  heroTimerDisplay: document.querySelector("#heroTimerDisplay"),
   heroCommitmentPreview: document.querySelector("#heroCommitmentPreview"),
+  heroDurationSelect: document.querySelector("#heroDurationSelect"),
+  customDurationField: document.querySelector("#customDurationField"),
+  customDurationInput: document.querySelector("#customDurationInput"),
   dailyQuote: document.querySelector("#dailyQuote"),
   newQuoteButton: document.querySelector("#newQuoteButton"),
   startDayButton: document.querySelector("#startDayButton"),
@@ -512,13 +516,18 @@ function renderStats() {
   el.streakDays.textContent = String(state.streak || 0);
   el.heroProgress.textContent = `${completed}/${total}`;
   el.heroSprints.textContent = String(metrics.sprints || 0);
-  el.heroRunStatus.textContent = metrics.sprints
-    ? "Đã có bằng chứng hôm nay"
-    : "Sẵn sàng trong 1 click";
+  el.heroRunStatus.textContent = getHeroRunStatus(metrics);
   el.todayProgressText.textContent = metrics.sprints
     ? `Hôm nay đã có ${metrics.sprints} sprint. Mai chỉ cần quay lại và bật tiếp.`
     : "Bắt đầu một sprint là ngày hôm nay đã có bằng chứng.";
   el.heroCommitmentPreview.textContent = state.commitment || makeCommitment();
+}
+
+function getHeroRunStatus(metrics = todayMetrics()) {
+  if (timer.running) return "Đang tập trung";
+  if (timer.remaining === 0) return "Sprint đã xong";
+  if (timer.remaining < timer.duration) return "Đang tạm dừng";
+  return metrics.sprints ? "Đã có bằng chứng hôm nay" : "Sẵn sàng trong 1 click";
 }
 
 function renderWeeklyReview() {
@@ -703,11 +712,52 @@ function skipOnboarding() {
   saveAndRender();
 }
 
-function setDuration(minutes) {
+function clampDuration(minutes) {
+  const value = Number.parseInt(minutes, 10);
+  if (Number.isNaN(value)) return 25;
+  return Math.min(Math.max(value, 1), 180);
+}
+
+function syncDurationControls(minutes, source = "") {
+  const value = String(minutes);
+  const presetValues = Array.from(el.heroDurationSelect.options)
+    .map((option) => option.value)
+    .filter((optionValue) => optionValue !== "custom");
+  const isPreset = presetValues.includes(value);
+
+  if (source !== "hero") {
+    el.heroDurationSelect.value = isPreset ? value : "custom";
+  }
+
+  if (source !== "custom") {
+    el.customDurationInput.value = value;
+  }
+
+  if (source !== "console" && Array.from(el.durationSelect.options).some((option) => option.value === value)) {
+    el.durationSelect.value = value;
+  }
+
+  el.customDurationField.hidden = el.heroDurationSelect.value !== "custom";
+}
+
+function setDuration(minutes, options = {}) {
+  const nextMinutes = clampDuration(minutes);
   stopTimer("Sẵn sàng");
-  timer.duration = Number(minutes) * 60;
+  timer.duration = nextMinutes * 60;
   timer.remaining = timer.duration;
+  syncDurationControls(nextMinutes, options.source);
   updateTimerDisplay();
+  updateTimerButtons();
+}
+
+function applyHeroDuration() {
+  const minutes = el.heroDurationSelect.value === "custom"
+    ? clampDuration(el.customDurationInput.value)
+    : clampDuration(el.heroDurationSelect.value);
+
+  if (!timer.running && (timer.remaining === timer.duration || timer.remaining === 0)) {
+    setDuration(minutes, { source: el.heroDurationSelect.value === "custom" ? "custom" : "hero" });
+  }
 }
 
 function toggleTimer() {
@@ -749,6 +799,7 @@ function resetTimer() {
   stopTimer("Sẵn sàng");
   timer.remaining = timer.duration;
   updateTimerDisplay();
+  updateTimerButtons();
 }
 
 function updateTimerButtons() {
@@ -757,12 +808,22 @@ function updateTimerButtons() {
     : '<span class="button-icon" aria-hidden="true">▶</span> Chạy';
   el.timerToggleButton.innerHTML = content;
   el.focusToggleButton.innerHTML = content;
+
+  const heroContent = timer.running
+    ? '<span class="button-icon" aria-hidden="true">⚡</span> Đang CHẠY'
+    : timer.remaining < timer.duration && timer.remaining > 0
+      ? '<span class="button-icon" aria-hidden="true">▶</span> Chạy tiếp'
+      : '<span class="button-icon" aria-hidden="true">⚡</span> Bật mode CHẠY';
+  el.startDayButton.innerHTML = heroContent;
+  el.startDayButton.classList.toggle("is-running", timer.running);
+  el.heroRunStatus.textContent = getHeroRunStatus();
 }
 
 function updateTimerDisplay() {
   const minutes = Math.floor(timer.remaining / 60);
   const seconds = timer.remaining % 60;
   const value = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  el.heroTimerDisplay.textContent = value;
   el.timerDisplay.textContent = value;
   el.focusTimerDisplay.textContent = value;
 
@@ -885,6 +946,8 @@ function resetSettings() {
 }
 
 function activateRunMode() {
+  applyHeroDuration();
+
   if (!state.tasks.length) {
     applySmartPlan({ overwrite: true });
   }
@@ -984,7 +1047,30 @@ window.addEventListener("scroll", () => {
 
 el.openGuideButton.addEventListener("click", () => toggleGuide(true));
 el.closeGuideButton.addEventListener("click", () => toggleGuide(false));
-el.durationSelect.addEventListener("change", (event) => setDuration(event.target.value));
+el.heroDurationSelect.addEventListener("change", (event) => {
+  const isCustom = event.target.value === "custom";
+  el.customDurationField.hidden = !isCustom;
+
+  if (isCustom) {
+    el.customDurationInput.focus();
+    setDuration(el.customDurationInput.value, { source: "hero" });
+    return;
+  }
+
+  setDuration(event.target.value, { source: "hero" });
+});
+el.customDurationInput.addEventListener("change", () => {
+  setDuration(el.customDurationInput.value, { source: "custom" });
+});
+el.customDurationInput.addEventListener("input", () => {
+  if (timer.running) return;
+  const minutes = clampDuration(el.customDurationInput.value);
+  timer.duration = minutes * 60;
+  timer.remaining = timer.duration;
+  updateTimerDisplay();
+  updateTimerButtons();
+});
+el.durationSelect.addEventListener("change", (event) => setDuration(event.target.value, { source: "console" }));
 el.timerToggleButton.addEventListener("click", toggleTimer);
 el.focusToggleButton.addEventListener("click", toggleTimer);
 el.timerResetButton.addEventListener("click", resetTimer);

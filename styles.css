@@ -1325,6 +1325,29 @@ button {
   text-align: left;
 }
 
+.hero-duration {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(86px, 0.45fr);
+  gap: 10px;
+  margin: 16px 0 14px;
+}
+
+.hero-duration label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.hero-duration select,
+.hero-duration input {
+  min-height: 42px;
+  margin-top: 6px;
+}
+
+.hero-duration input {
+  text-align: center;
+}
+
 .side-panel,
 .tool-panel,
 .checkin-band {
@@ -1762,6 +1785,10 @@ select:focus-visible {
 
   .hero-run-time {
     font-size: 3.25rem;
+  }
+
+  .hero-duration {
+    grid-template-columns: 1fr;
   }
 
   .mobile-nav {

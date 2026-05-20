@@ -248,7 +248,7 @@
         <header class="hero-section reveal">
           <div class="hero-copy-block">
             <p class="eyebrow" id="todayLabel"></p>
-            <h2>25 phút để có bản nháp đầu tiên.</h2>
+            <h2>Một phiên để có bản nháp đầu tiên.</h2>
             <p class="hero-copy">CHẠY biến trạng thái “để lát nữa” thành 3 bước nhỏ, một cam kết rõ, rồi mở RUN MODE để bạn bắt tay vào việc ngay.</p>
             <div class="hero-pills info-chips" aria-label="CHẠY phù hợp với ai">
               <span>Gợi ý sẵn 3 việc nhỏ</span>
@@ -261,7 +261,7 @@
               <span>RUN MODE</span>
               <small id="heroRunStatus">Sẵn sàng trong 1 click</small>
             </div>
-            <div class="hero-run-time">25:00</div>
+            <div class="hero-run-time" id="heroTimerDisplay">25:00</div>
             <p id="heroCommitmentPreview">CHẠY sẽ chọn việc đầu tiên và tạo cam kết đầu ra cho phiên này.</p>
             <div class="daily-loop" aria-label="Tiến độ hôm nay">
               <div>
@@ -272,6 +272,23 @@
                 <strong id="heroSprints">0</strong>
                 <span>sprint hôm nay</span>
               </div>
+            </div>
+            <div class="hero-duration">
+              <label>
+                Chọn thời lượng
+                <select id="heroDurationSelect" aria-label="Chọn thời lượng RUN MODE">
+                  <option value="10">10 phút khởi động</option>
+                  <option value="25" selected>25 phút tập trung</option>
+                  <option value="45">45 phút làm sâu</option>
+                  <option value="60">60 phút một đầu việc</option>
+                  <option value="90">90 phút deep work</option>
+                  <option value="custom">Tự nhập...</option>
+                </select>
+              </label>
+              <label class="custom-duration-field" id="customDurationField" hidden>
+                Số phút
+                <input id="customDurationInput" type="number" min="1" max="180" step="1" value="25" inputmode="numeric">
+              </label>
             </div>
             <button class="primary-button" id="startDayButton" type="button">
               <span class="button-icon" aria-hidden="true">⚡</span>
@@ -306,8 +323,8 @@
         <section class="run-mode-showcase tool-panel reveal" id="focusPanel">
           <div class="run-mode-copy">
             <p class="panel-label">RUN MODE</p>
-            <h3>Không gian tập trung cho người làm sáng tạo</h3>
-            <p class="feature-note">Timer, cam kết và bước nhỏ nằm cùng một chỗ. Nút chính vẫn là Bật mode CHẠY ở đầu trang.</p>
+            <h3>Điều khiển phiên đang chạy</h3>
+            <p class="feature-note">Phần này dùng để đổi thời lượng, tạm dừng, reset hoặc mở lại toàn màn hình. Bắt đầu phiên vẫn ở nút Bật mode CHẠY phía trên.</p>
             <div class="run-mode-prompts info-chips" aria-label="Nguyên tắc của RUN MODE">
               <span>Làm bản nháp trước.</span>
               <span>Không cần hay ngay.</span>
@@ -333,9 +350,12 @@
             </div>
 
             <select id="durationSelect" aria-label="Độ dài phiên tập trung">
+              <option value="10">10 phút</option>
               <option value="15">15 phút</option>
               <option value="25" selected>25 phút</option>
               <option value="45">45 phút</option>
+              <option value="60">60 phút</option>
+              <option value="90">90 phút</option>
             </select>
 
             <div class="timer-actions">
