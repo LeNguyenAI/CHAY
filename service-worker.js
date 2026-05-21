@@ -1,9 +1,9 @@
-const CACHE_NAME = "chay-pwa-v6";
+const CACHE_NAME = "chay-pwa-v8";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=light-1",
-  "./app.js?v=light-1",
+  "./styles.css?v=light-3",
+  "./app.js?v=light-3",
   "./manifest.webmanifest",
   "./assets/chay-logo.png",
   "./assets/pwa-icon-192.png",
